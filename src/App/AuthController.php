@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__ . '/../Models/User.php';
+require_once __DIR__ . '/User.php';
 
 class AuthController
 {
@@ -24,10 +24,7 @@ class AuthController
 
         $redirect = $user['role'] === 'admin' ? 'dashboard' : 'map';
 
-        return [
-            'success' => true,
-            'redirect' => $redirect,
-        ];
+        return ['success' => true, 'redirect' => $redirect];
     }
 
     public function register(array $data): array
@@ -63,10 +60,7 @@ class AuthController
 
         loginUser($user);
 
-        return [
-            'success' => true,
-            'redirect' => 'map',
-        ];
+        return ['success' => true, 'redirect' => 'map'];
     }
 
     public function logout(): array

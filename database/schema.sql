@@ -65,9 +65,9 @@ ON DUPLICATE KEY UPDATE email = email;
 -- Insert sample incidents for testing
 -- CONCEPT: Loops - These records will be iterated through in PHP and JavaScript
 INSERT INTO incidents (title, description, latitude, longitude, severity, status, incident_type) VALUES
-('Vehicle Theft', 'Vehicle reported stolen from parking lot', 40.7128, -74.0060, 3, 'active', 'police'),
-('Building Fire', 'Fire reported in commercial building', 40.7308, -73.9973, 5, 'active', 'fire'),
-('Medical Emergency', 'Person unconscious in public park', 40.7484, -73.9857, 4, 'active', 'medical'),
-('Assault Report', 'Physical altercation reported', 40.7580, -73.9855, 2, 'resolved', 'police'),
-('Gas Leak', 'Strong gas odor detected in residential area', 40.7614, -73.9776, 5, 'dispatched', 'fire')
+('Vehicle Theft', 'Vehicle reported stolen from parking lot', 42.6629, 21.1655, 3, 'active', 'police'),
+('Building Fire', 'Fire reported in commercial building', 42.6650, 21.1600, 5, 'active', 'fire'),
+('Medical Emergency', 'Person unconscious in public park', 42.6590, 21.1710, 4, 'active', 'medical'),
+('Assault Report', 'Physical altercation reported', 42.6670, 21.1640, 2, 'resolved', 'police'),
+('Gas Leak', 'Strong gas odor detected in residential area', 42.6570, 21.1550, 5, 'dispatched', 'fire')
 ON DUPLICATE KEY UPDATE title = title;

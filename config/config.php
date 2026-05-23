@@ -1,6 +1,6 @@
 <?php
 
-define('APP_NAME', 'Crime Map Simulator');
+define('APP_NAME', ' San Andreas');
 define('PASSWORD_MIN_LENGTH', 8);
 define('BCRYPT_COST', 10);
 

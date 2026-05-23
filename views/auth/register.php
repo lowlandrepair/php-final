@@ -69,7 +69,7 @@ require_once __DIR__ . '/../layouts/header.php';
         </form>
 
         <div class="auth-footer">
-            <p>Already have an account? <a href="/php-final/public/index.php?route=login">Sign in</a></p>
+            <p>Already have an account? <a href="/index.php?route=login">Sign in</a></p>
         </div>
     </div>
 </div>

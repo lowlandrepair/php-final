@@ -7,18 +7,10 @@ class AuthMiddleware
         return in_array($route, ['login', 'register'], true);
     }
 
-    public function execute(): void
-    {
-        if (!isLoggedIn()) {
-            header('Location: /php-final/public/index.php?route=login');
-            exit;
-        }
-    }
-
     public static function requireLogin(): void
     {
         if (!isLoggedIn()) {
-            header('Location: /php-final/public/index.php?route=login');
+            header('Location: /index.php?route=login');
             exit;
         }
     }
@@ -26,7 +18,7 @@ class AuthMiddleware
     public static function requireAdmin(): void
     {
         if (!isLoggedIn() || getCurrentUserRole() !== 'admin') {
-            header('Location: /php-final/public/index.php?route=login');
+            header('Location: /index.php?route=login');
             exit;
         }
     }

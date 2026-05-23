@@ -2,8 +2,9 @@
 require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../config/session.php';
 require_once __DIR__ . '/../config/database.php';
-require_once __DIR__ . '/../src/Controllers/AuthController.php';
-require_once __DIR__ . '/../src/Middleware/AuthMiddleware.php';
+require_once __DIR__ . '/../src/App/AuthController.php';
+require_once __DIR__ . '/../src/App/AuthMiddleware.php';
+require_once __DIR__ . '/../src/App/IncidentController.php';
 
 $route = $_GET['route'] ?? 'login';
 $method = $_SERVER['REQUEST_METHOD'];
@@ -15,6 +16,16 @@ function handleApiRequest(string $route, string $method): void
     $input = file_get_contents('php://input');
     $data = json_decode($input, true) ?? [];
     $authController = new AuthController();
+    $incidentController = new IncidentController();
+
+    if (!in_array($route, ['login', 'register'], true)) {
+        if (!isLoggedIn()) {
+            http_response_code(401);
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'message' => 'Unauthorized. Please sign in.']);
+            exit;
+        }
+    }
 
     switch ($route) {
         case 'login':
@@ -37,8 +48,41 @@ function handleApiRequest(string $route, string $method): void
                 echo json_encode(['success' => false, 'message' => 'Method not allowed']);
             }
             break;
+        case 'api/incidents':
+            if ($method === 'GET') {
+                $result = $incidentController->getIncidents();
+            } else if ($method === 'POST') {
+                $result = $incidentController->createIncident($data);
+            } else {
+                http_response_code(405);
+                $result = ['success' => false, 'message' => 'Method not allowed'];
+            }
+            header('Content-Type: application/json');
+            echo json_encode($result);
+            break;
+        case 'api/incidents/dispatch':
+            if ($method === 'POST') {
+                $result = $incidentController->dispatchIncident($data);
+            } else {
+                http_response_code(405);
+                $result = ['success' => false, 'message' => 'Method not allowed'];
+            }
+            header('Content-Type: application/json');
+            echo json_encode($result);
+            break;
+        case 'api/incidents/resolve':
+            if ($method === 'POST') {
+                $result = $incidentController->resolveIncident($data);
+            } else {
+                http_response_code(405);
+                $result = ['success' => false, 'message' => 'Method not allowed'];
+            }
+            header('Content-Type: application/json');
+            echo json_encode($result);
+            break;
         default:
             http_response_code(404);
+            header('Content-Type: application/json');
             echo json_encode(['success' => false, 'message' => 'Endpoint not found']);
             break;
     }
@@ -47,10 +91,8 @@ function handleApiRequest(string $route, string $method): void
 
 function handlePageRequest(string $route): void
 {
-    $middleware = new AuthMiddleware();
-
     if (!AuthMiddleware::isPublicRoute($route)) {
-        $middleware->execute();
+        AuthMiddleware::requireLogin();
     }
 
     switch ($route) {
@@ -58,14 +100,14 @@ function handlePageRequest(string $route): void
             if (isLoggedIn()) {
                 $userRole = getCurrentUserRole();
                 $redirect = $userRole === 'admin' ? 'dashboard' : 'map';
-                header('Location: /php-final/public/index.php?route=' . $redirect);
+                header('Location: /index.php?route=' . $redirect);
                 exit;
             }
             require_once __DIR__ . '/../views/auth/login.php';
             break;
         case 'register':
             if (isLoggedIn()) {
-                header('Location: /php-final/public/index.php?route=dashboard');
+                header('Location: /index.php?route=dashboard');
                 exit;
             }
             require_once __DIR__ . '/../views/auth/register.php';
@@ -76,24 +118,25 @@ function handlePageRequest(string $route): void
             break;
         case 'map':
             AuthMiddleware::requireLogin();
-            echo '<h1>Live Map</h1><p>Coming in Phase 4</p>';
+            require_once __DIR__ . '/../views/map.php';
             break;
         case 'logout':
             $authController = new AuthController();
             $result = $authController->logout();
             setFlashMessage($result['message'], 'success');
-            header('Location: /php-final/public/index.php?route=login');
+            header('Location: /index.php?route=login');
             exit;
         default:
-            header('Location: /php-final/public/index.php?route=login');
+            header('Location: /index.php?route=login');
             exit;
     }
 }
 
-if (in_array($route, ['login', 'register']) && $method === 'POST') {
+if (str_starts_with($route, 'api/') || (in_array($route, ['login', 'register'], true) && $method === 'POST')) {
     handleApiRequest($route, $method);
 } else {
     handlePageRequest($route);
 }
+
 
 

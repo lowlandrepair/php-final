@@ -44,7 +44,7 @@ require_once __DIR__ . '/../layouts/header.php';
         </form>
 
         <div class="auth-footer">
-            <p>New here? <a href="/php-final/public/index.php?route=register">Create an account</a></p>
+            <p>New here? <a href="/index.php?route=register">Create an account</a></p>
         </div>
     </div>
 </div>

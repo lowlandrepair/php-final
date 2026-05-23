@@ -46,7 +46,7 @@ async function handleLoginSubmit(event) {
     submitBtn.innerHTML = '<span class="spinner"></span> Signing in...';
 
     try {
-        const response = await fetch('/php-final/public/index.php?route=login', {
+        const response = await fetch('/index.php?route=login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
@@ -54,7 +54,7 @@ async function handleLoginSubmit(event) {
 
         const result = await response.json();
         if (result.success) {
-            window.location.href = '/php-final/public/index.php?route=' + result.redirect;
+            window.location.href = '/index.php?route=' + result.redirect;
         } else {
             showAuthMessage(result.message, 'error');
         }
@@ -94,7 +94,7 @@ async function handleRegisterSubmit(event) {
     submitBtn.innerHTML = '<span class="spinner"></span> Creating account...';
 
     try {
-        const response = await fetch('/php-final/public/index.php?route=register', {
+        const response = await fetch('/index.php?route=register', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
@@ -102,7 +102,7 @@ async function handleRegisterSubmit(event) {
 
         const result = await response.json();
         if (result.success) {
-            window.location.href = '/php-final/public/index.php?route=' + result.redirect;
+            window.location.href = '/index.php?route=' + result.redirect;
         } else {
             showAuthMessage(result.message, 'error');
         }
