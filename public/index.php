@@ -80,7 +80,32 @@ function handleApiRequest(string $route, string $method): void
             header('Content-Type: application/json');
             echo json_encode($result);
             break;
+        /* ---- Admin-only CRUD endpoints ---- */
         default:
+            // Handle /api/incidents/{id} patterns
+            if (preg_match('#^api/incidents/([0-9]+)$#', $route, $m)) {
+                // Admin guard
+                if (getCurrentUserRole() !== 'admin') {
+                    http_response_code(403);
+                    header('Content-Type: application/json');
+                    echo json_encode(['success' => false, 'message' => 'Forbidden. Admin only.']);
+                    exit;
+                }
+                $id = (int)$m[1];
+                if ($method === 'GET') {
+                    $result = $incidentController->getIncident($id);
+                } elseif ($method === 'PUT') {
+                    $result = $incidentController->updateIncident($id, $data);
+                } elseif ($method === 'DELETE') {
+                    $result = $incidentController->deleteIncident($id);
+                } else {
+                    http_response_code(405);
+                    $result = ['success' => false, 'message' => 'Method not allowed'];
+                }
+                header('Content-Type: application/json');
+                echo json_encode($result);
+                exit;
+            }
             http_response_code(404);
             header('Content-Type: application/json');
             echo json_encode(['success' => false, 'message' => 'Endpoint not found']);
@@ -100,21 +125,28 @@ function handlePageRequest(string $route): void
             if (isLoggedIn()) {
                 $userRole = getCurrentUserRole();
                 $redirect = $userRole === 'admin' ? 'dashboard' : 'map';
-                header('Location: /index.php?route=' . $redirect);
+                header('Location: /php-final/public/index.php?route=' . $redirect);
                 exit;
             }
             require_once __DIR__ . '/../views/auth/login.php';
             break;
         case 'register':
             if (isLoggedIn()) {
-                header('Location: /index.php?route=dashboard');
+                header('Location: /php-final/public/index.php?route=dashboard');
                 exit;
             }
             require_once __DIR__ . '/../views/auth/register.php';
             break;
+        case 'forgot-password':
+            if (isLoggedIn()) {
+                header('Location: /php-final/public/index.php?route=dashboard');
+                exit;
+            }
+            require_once __DIR__ . '/../views/auth/forgot-password.php';
+            break;
         case 'dashboard':
             AuthMiddleware::requireAdmin();
-            echo '<h1>Admin Dashboard</h1><p>Coming in Phase 3</p>';
+            require_once __DIR__ . '/../views/admin/dashboard.php';
             break;
         case 'map':
             AuthMiddleware::requireLogin();
@@ -124,10 +156,10 @@ function handlePageRequest(string $route): void
             $authController = new AuthController();
             $result = $authController->logout();
             setFlashMessage($result['message'], 'success');
-            header('Location: /index.php?route=login');
+            header('Location: /php-final/public/index.php?route=login');
             exit;
         default:
-            header('Location: /index.php?route=login');
+            header('Location: /php-final/public/index.php?route=login');
             exit;
     }
 }

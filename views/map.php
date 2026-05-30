@@ -1,10 +1,12 @@
 <?php
+require_once __DIR__ . '/../config/config.php';
+require_once __DIR__ . '/../config/session.php';
 $pageTitle = 'Live Map - ' . APP_NAME;
 require_once __DIR__ . '/layouts/header.php';
 ?>
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-<link rel="stylesheet" href="assets/css/map.css">
+<link rel="stylesheet" href="/php-final/public/assets/css/map.css">
 
 <div class="app-wrapper">
     <header class="app-header">
@@ -17,7 +19,12 @@ require_once __DIR__ . '/layouts/header.php';
                 <span class="user-name"><?php echo htmlspecialchars($_SESSION['user']['full_name'] ?? 'Guest'); ?></span>
                 <span class="user-role badge badge-info"><?php echo htmlspecialchars(ucfirst($_SESSION['user']['role'] ?? 'viewer')); ?></span>
             </div>
-            <a href="/index.php?route=logout" class="btn btn-secondary btn-sm logout-btn">
+            <?php if (isset($_SESSION['user']['role']) && $_SESSION['user']['role'] === 'admin'): ?>
+            <a href="/php-final/public/index.php?route=dashboard" class="btn btn-primary btn-sm admin-btn" aria-label="Admin dashboard">
+                Admin Dashboard
+            </a>
+            <?php endif; ?>
+            <a href="/php-final/public/index.php?route=logout" class="btn btn-secondary btn-sm logout-btn">
                 <span>Sign out</span>
                 <span class="logout-icon">➔</span>
             </a>
@@ -35,17 +42,17 @@ require_once __DIR__ . '/layouts/header.php';
         <aside class="sidebar-panel">
             <div class="sidebar-tabs">
                 <button type="button" class="tab-btn active" id="tabIncidents" aria-selected="true" role="tab">
-                    🚨 Active Incidents
+                    Active Incidents
                 </button>
                 <button type="button" class="tab-btn" id="tabReport" aria-selected="false" role="tab">
-                    📝 Report Incident
+                    Report Incident
                 </button>
             </div>
 
             <div class="sidebar-content">
                 <div class="tab-pane active" id="paneIncidents">
                     <div id="incidentDetailView" class="detail-view card d-none">
-                        <button type="button" class="close-detail-btn" id="closeDetailBtn" aria-label="Close details">✕</button>
+                        <button type="button" class="close-detail-btn" id="closeDetailBtn" aria-label="Close details">Close</button>
                         <div class="detail-header">
                             <span class="badge" id="detailTypeBadge">POLICE</span>
                             <span class="badge" id="detailSeverityBadge">SEVERITY 3</span>
@@ -70,9 +77,9 @@ require_once __DIR__ . '/layouts/header.php';
                                 <label for="unitTypeSelect" class="form-label">Dispatch Response Unit</label>
                                 <div class="d-flex gap-2">
                                     <select id="unitTypeSelect" class="form-select">
-                                        <option value="police">👮 Police Unit</option>
-                                        <option value="fire">🚒 Fire Truck</option>
-                                        <option value="medical">🚑 Ambulance</option>
+                                        <option value="police">Police Unit</option>
+                                        <option value="fire">Fire Truck</option>
+                                        <option value="medical">Ambulance</option>
                                     </select>
                                     <button type="button" class="btn btn-primary" id="btnDispatchUnit">Dispatch</button>
                                 </div>
@@ -99,7 +106,7 @@ require_once __DIR__ . '/layouts/header.php';
                 <div class="tab-pane" id="paneReport">
                     <form id="reportIncidentForm" class="report-form" novalidate>
                         <div class="alert alert-info">
-                            💡 <strong>Tip:</strong> Click anywhere on the map to automatically populate the coordinates!
+                            <strong>Tip:</strong> Click anywhere on the map to automatically populate the coordinates!
                         </div>
 
                         <div id="reportMessage" class="alert d-none" role="status"></div>
@@ -112,9 +119,9 @@ require_once __DIR__ . '/layouts/header.php';
                         <div class="form-group">
                             <label for="incident_type" class="form-label">Incident Type</label>
                             <select id="incident_type" name="incident_type" class="form-select" required>
-                                <option value="police">👮 Police / Security</option>
-                                <option value="fire">🚒 Fire / Gas / Hazard</option>
-                                <option value="medical">🚑 Medical / Emergency</option>
+                                <option value="police">Police / Security</option>
+                                <option value="fire">Fire / Gas / Hazard</option>
+                                <option value="medical">Medical / Emergency</option>
                             </select>
                         </div>
 
@@ -154,6 +161,6 @@ require_once __DIR__ . '/layouts/header.php';
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-<script src="assets/js/map.js"></script>
+<script src="/php-final/public/assets/js/map.js"></script>
 
 <?php require_once __DIR__ . '/layouts/footer.php'; ?>

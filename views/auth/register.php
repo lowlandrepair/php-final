@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../../config/config.php';
 $pageTitle = 'Create account - ' . APP_NAME;
 require_once __DIR__ . '/../layouts/header.php';
 ?>
@@ -6,7 +7,7 @@ require_once __DIR__ . '/../layouts/header.php';
 <div class="auth-container" role="main">
     <div class="auth-card" aria-labelledby="register-heading">
         <div class="auth-header">
-            <div class="auth-logo">🚀</div>
+            <div class="auth-logo"></div>
             <span class="eyebrow">Fast setup</span>
             <h1 id="register-heading" class="auth-title">Create your account</h1>
             <p class="auth-subtitle">Register once and gain instant access to the Crime Map simulator and reporting tools.</p>
@@ -49,7 +50,7 @@ require_once __DIR__ . '/../layouts/header.php';
                     placeholder="create a password"
                     autocomplete="new-password"
                 >
-                <button type="button" class="password-toggle-btn" aria-label="Toggle password visibility">🔒</button>
+                <button type="button" class="password-toggle-btn" aria-label="Toggle password visibility">Show</button>
             </div>
 
             <div class="form-group password-toggle">
@@ -62,14 +63,14 @@ require_once __DIR__ . '/../layouts/header.php';
                     placeholder="Repeat your password"
                     autocomplete="new-password"
                 >
-                <button type="button" class="password-toggle-btn" aria-label="Toggle password visibility">🔒</button>
+                <button type="button" class="password-toggle-btn" aria-label="Toggle password visibility">Show</button>
             </div>
 
             <button type="submit" class="btn btn-primary auth-btn">Create account</button>
         </form>
 
         <div class="auth-footer">
-            <p>Already have an account? <a href="/index.php?route=login">Sign in</a></p>
+            <p>Already have an account? <a href="/php-final/public/index.php?route=login">Sign in</a></p>
         </div>
     </div>
 </div>

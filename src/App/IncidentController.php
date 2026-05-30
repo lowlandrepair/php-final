@@ -20,6 +20,54 @@ class IncidentController
         ];
     }
 
+    public function getIncident(int $id): array
+    {
+        $incident = $this->incidentModel->getById($id);
+        if ($incident === false) {
+            return ['success' => false, 'message' => 'Incident not found.'];
+        }
+        return ['success' => true, 'data' => $incident];
+    }
+
+    public function updateIncident(int $id, array $data): array
+    {
+        $title       = trim($data['title'] ?? '');
+        $description = trim($data['description'] ?? '');
+        $latitude    = filter_var($data['latitude'] ?? null, FILTER_VALIDATE_FLOAT);
+        $longitude   = filter_var($data['longitude'] ?? null, FILTER_VALIDATE_FLOAT);
+        $severity    = filter_var($data['severity'] ?? null, FILTER_VALIDATE_INT);
+        $incidentType = trim($data['incident_type'] ?? '');
+        $status      = trim($data['status'] ?? '');
+
+        if ($title === '' || $latitude === false || $longitude === false || $severity === false || $incidentType === '' || $status === '') {
+            return ['success' => false, 'message' => 'Required fields are missing or invalid.'];
+        }
+        if ($severity < 1 || $severity > 5) {
+            return ['success' => false, 'message' => 'Severity must be between 1 and 5.'];
+        }
+        if (!in_array($incidentType, ['police', 'fire', 'medical'], true)) {
+            return ['success' => false, 'message' => 'Invalid incident type.'];
+        }
+        if (!in_array($status, ['active', 'dispatched', 'resolved'], true)) {
+            return ['success' => false, 'message' => 'Invalid status value.'];
+        }
+
+        $ok = $this->incidentModel->update($id, $title, $description, $latitude, $longitude, $severity, $incidentType, $status);
+        if (!$ok) {
+            return ['success' => false, 'message' => 'Failed to update incident.'];
+        }
+        return ['success' => true, 'message' => 'Incident updated successfully.'];
+    }
+
+    public function deleteIncident(int $id): array
+    {
+        $ok = $this->incidentModel->delete($id);
+        if (!$ok) {
+            return ['success' => false, 'message' => 'Failed to delete incident.'];
+        }
+        return ['success' => true, 'message' => 'Incident deleted successfully.'];
+    }
+
     public function createIncident(array $data): array
     {
         $title = trim($data['title'] ?? '');

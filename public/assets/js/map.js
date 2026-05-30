@@ -84,7 +84,7 @@ function initMap() {
         }
 
         const tempIcon = L.divIcon({
-            html: `<div class="custom-marker"><div class="marker-pin" style="--marker-color: #64748B"><span class="marker-emoji">📍</span></div></div>`,
+            html: `<div class="custom-marker"><div class="marker-pin" style="--marker-color: #64748B"></div></div>`,
             className: 'leaflet-div-icon',
             iconSize: [36, 36],
             iconAnchor: [18, 36]
@@ -136,9 +136,9 @@ function switchTab(tabName) {
 
 async function fetchIncidents() {
     try {
-        const response = await fetch('/index.php?route=api/incidents');
+        const response = await fetch('/php-final/public/index.php?route=api/incidents');
         if (response.status === 401) {
-            window.location.href = '/index.php?route=login';
+            window.location.href = '/php-final/public/index.php?route=login';
             return;
         }
 
@@ -181,14 +181,14 @@ function plotIncidentsOnMap() {
         const type = incident.incident_type;
 
         let color = '#3B82F6';
-        let emoji = '👮';
+        let emoji = '';
 
         if (type === 'fire') {
             color = '#EF4444';
-            emoji = '🚒';
+            emoji = '';
         } else if (type === 'medical') {
             color = '#10B981';
-            emoji = '🚑';
+            emoji = '';
         }
 
         if (status === 'resolved') {
@@ -200,9 +200,7 @@ function plotIncidentsOnMap() {
         
         const markerHtml = `
             <div class="custom-marker">
-                <div class="marker-pin ${severeClass} ${resolvedClass}" style="--marker-color: ${color}">
-                    <span class="marker-emoji">${emoji}</span>
-                </div>
+                <div class="marker-pin ${severeClass} ${resolvedClass}" style="--marker-color: ${color}"></div>
             </div>
         `;
 
@@ -254,10 +252,10 @@ function renderIncidentsList() {
         return titleMatch || descMatch || typeMatch || statusMatch;
     });
 
-    if (filteredIncidents.length === 0) {
+        if (filteredIncidents.length === 0) {
         incidentsList.innerHTML = `
             <div class="text-center p-4 text-secondary">
-                <p>🔍 No incidents matched your filters.</p>
+                <p>No incidents matched your filters.</p>
             </div>
         `;
         return;
@@ -272,9 +270,9 @@ function renderIncidentsList() {
 
         const dateStr = new Date(inc.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         
-        let typeLabel = '👮 Police';
-        if (inc.incident_type === 'fire') typeLabel = '🚒 Hazard';
-        if (inc.incident_type === 'medical') typeLabel = '🚑 Medical';
+        let typeLabel = 'Police';
+        if (inc.incident_type === 'fire') typeLabel = 'Hazard';
+        if (inc.incident_type === 'medical') typeLabel = 'Medical';
 
         let statusClass = 'badge-error';
         if (inc.status === 'dispatched') statusClass = 'badge-warning';
@@ -354,11 +352,11 @@ function showIncidentDetails(incident) {
 
     if (incident.status === 'dispatched') {
         dispatchInfoBox.classList.remove('d-none');
-        
-        let unitText = '👮 Police Unit';
-        if (incident.dispatch_unit === 'fire') unitText = '🚒 Fire Station Response';
-        if (incident.dispatch_unit === 'medical') unitText = '🚑 Medical Response Team';
-        
+
+        let unitText = 'Police Unit';
+        if (incident.dispatch_unit === 'fire') unitText = 'Fire Station Response';
+        if (incident.dispatch_unit === 'medical') unitText = 'Medical Response Team';
+
         dispatchUnitBadge.textContent = unitText;
         dispatchUnitBadge.className = 'badge';
         if (incident.dispatch_unit === 'police') dispatchUnitBadge.classList.add('badge-info');
@@ -366,7 +364,7 @@ function showIncidentDetails(incident) {
         if (incident.dispatch_unit === 'medical') dispatchUnitBadge.classList.add('badge-success');
 
         const dispStatus = incident.dispatch_status ? incident.dispatch_status.replace('_', ' ').toUpperCase() : 'EN ROUTE';
-        dispatchStatusText.innerHTML = `🚨 State: <b>${dispStatus}</b> <br><small>Dispatched at ${new Date(incident.dispatched_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</small>`;
+        dispatchStatusText.innerHTML = `State: <b>${dispStatus}</b> <br><small>Dispatched at ${new Date(incident.dispatched_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</small>`;
     } else {
         dispatchInfoBox.classList.add('d-none');
     }
@@ -404,7 +402,7 @@ async function handleDispatchSubmit() {
     submitBtn.innerHTML = '<span class="spinner"></span> Dispatching...';
 
     try {
-        const response = await fetch('/index.php?route=api/incidents/dispatch', {
+        const response = await fetch('/php-final/public/index.php?route=api/incidents/dispatch', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -439,7 +437,7 @@ async function handleResolveSubmit() {
     submitBtn.innerHTML = '<span class="spinner"></span> Resolving...';
 
     try {
-        const response = await fetch('/index.php?route=api/incidents/resolve', {
+        const response = await fetch('/php-final/public/index.php?route=api/incidents/resolve', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -491,7 +489,7 @@ async function handleReportSubmit(e) {
     submitBtn.innerHTML = '<span class="spinner"></span> Saving Report...';
 
     try {
-        const response = await fetch('/index.php?route=api/incidents', {
+        const response = await fetch('/php-final/public/index.php?route=api/incidents', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

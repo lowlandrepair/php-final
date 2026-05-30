@@ -25,6 +25,57 @@ class Incident
         return $this->db->fetchAll($sql);
     }
 
+    public function getById(int $id): array|false
+    {
+        $sql = "SELECT i.*, 
+                       d.unit_type AS dispatch_unit, 
+                       d.status AS dispatch_status, 
+                       d.dispatched_at 
+                FROM incidents i 
+                LEFT JOIN dispatches d ON d.incident_id = i.id 
+                     AND d.id = (SELECT id FROM dispatches WHERE incident_id = i.id ORDER BY dispatched_at DESC LIMIT 1)
+                WHERE i.id = :id LIMIT 1";
+        return $this->db->fetchOne($sql, [':id' => $id]);
+    }
+
+    public function update(
+        int $id,
+        string $title,
+        string $description,
+        float $latitude,
+        float $longitude,
+        int $severity,
+        string $incidentType,
+        string $status
+    ): bool {
+        $sql = "UPDATE incidents 
+                SET title = :title,
+                    description = :description,
+                    latitude = :latitude,
+                    longitude = :longitude,
+                    severity = :severity,
+                    incident_type = :incident_type,
+                    status = :status,
+                    updated_at = CURRENT_TIMESTAMP
+                WHERE id = :id";
+        return $this->db->query($sql, [
+            ':id'            => $id,
+            ':title'         => $title,
+            ':description'   => $description,
+            ':latitude'      => $latitude,
+            ':longitude'     => $longitude,
+            ':severity'      => $severity,
+            ':incident_type' => $incidentType,
+            ':status'        => $status,
+        ]);
+    }
+
+    public function delete(int $id): bool
+    {
+        $sql = "DELETE FROM incidents WHERE id = :id";
+        return $this->db->query($sql, [':id' => $id]);
+    }
+
     public function create(
         string $title,
         string $description,

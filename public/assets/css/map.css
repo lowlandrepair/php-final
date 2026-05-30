@@ -39,6 +39,20 @@
     gap: var(--spacing-md);
 }
 
+.admin-btn {
+    background-color: rgba(255, 255, 255, 0.14);
+    color: white;
+    border: 1px solid rgba(255,255,255,0.18);
+    padding: 8px 10px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.admin-btn:hover {
+    background-color: rgba(255,255,255,0.2);
+}
+
 .user-info {
     display: flex;
     flex-direction: column;
