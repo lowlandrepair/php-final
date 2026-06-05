@@ -1,10 +1,8 @@
-/* ============================================================
-   ADMIN DASHBOARD — San Andreas Crime Map
-   ============================================================ */
+/* Admin dashboard - San Andreas Crime Map */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300..700;1,14..32,300..700&family=JetBrains+Mono:wght@400;500&display=swap');
 
-/* ── Root tokens ─────────────────────────────────────────── */
+/* Root tokens */
 :root {
   --bg:          #0d1117;
   --bg-surface:  #161b22;
@@ -52,7 +50,7 @@
   --sidebar-w: 0px; /* no sidebar in this layout */
 }
 
-/* ── Reset & base ────────────────────────────────────────── */
+/* Reset and base */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 html, body {
@@ -65,7 +63,7 @@ html, body {
   overflow: hidden;
 }
 
-/* ── Topbar ──────────────────────────────────────────────── */
+/* Topbar */
 .dash-header {
   position: fixed;
   inset: 0 0 auto 0;
@@ -159,7 +157,7 @@ html, body {
   background: rgba(248,81,73,.08);
 }
 
-/* ── Main layout ─────────────────────────────────────────── */
+/* Main layout */
 .dash-layout {
   display: grid;
   grid-template-columns: 1fr 340px;
@@ -169,7 +167,7 @@ html, body {
   overflow: hidden;
 }
 
-/* ── Left panel — table ──────────────────────────────────── */
+/* Left panel table */
 .dash-panel-left {
   display: flex;
   flex-direction: column;
@@ -471,7 +469,7 @@ html, body {
 .dash-empty-icon { font-size: 36px; margin-bottom: 12px; }
 .dash-empty p { font-size: 13px; }
 
-/* ── Right panel — detail / map ──────────────────────────── */
+/* Right panel detail / map */
 .dash-panel-right {
   display: flex;
   flex-direction: column;
@@ -622,7 +620,7 @@ html, body {
 .dash-detail-btn:hover { color: var(--blue); border-color: var(--blue); background: rgba(88,166,255,.08); }
 .dash-detail-btn.danger:hover { color: var(--red); border-color: var(--red); background: rgba(248,81,73,.08); }
 
-/* ── Side drawer ─────────────────────────────────────────── */
+/* Side drawer */
 .dash-drawer-overlay {
   position: fixed;
   inset: 0;
@@ -882,7 +880,7 @@ html, body {
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* ── Toast notifications ─────────────────────────────────── */
+/* Toast notifications */
 .dash-toast-wrap {
   position: fixed;
   bottom: 20px;
@@ -930,7 +928,7 @@ html, body {
   to { opacity: 0; transform: translateX(12px); height: 0; padding: 0; margin: 0; }
 }
 
-/* ── Confirm dialog ──────────────────────────────────────── */
+/* Confirm dialog */
 .dash-confirm-overlay {
   position: fixed; inset: 0;
   background: rgba(0,0,0,.7);
@@ -975,7 +973,7 @@ html, body {
 .dash-confirm-ok { background: var(--red); color: #fff; }
 .dash-confirm-ok:hover { filter: brightness(1.1); }
 
-/* ── Audit trail note in drawer ──────────────────────────── */
+/* Audit trail note in drawer */
 .dash-audit-box {
   background: var(--bg-elevated);
   border: 1px solid var(--border);
@@ -1006,24 +1004,24 @@ html, body {
   color: var(--txt-muted);
 }
 
-/* ── Scrollbar global ────────────────────────────────────── */
+/* Scrollbar global */
 * { scrollbar-width: thin; scrollbar-color: var(--bg-elevated) transparent; }
 
-/* ── Focus rings (WCAG AA) ───────────────────────────────── */
+/* Focus rings */
 :focus-visible {
   outline: 2px solid var(--blue);
   outline-offset: 2px;
   border-radius: var(--radius-sm);
 }
 
-/* ── Coord inputs mono ───────────────────────────────────── */
+/* Coordinate inputs */
 input[data-type="coord"] {
   font-family: 'JetBrains Mono', monospace;
   font-size: 12px;
   font-variant-numeric: tabular-nums;
 }
 
-/* ── Loading skeleton ────────────────────────────────────── */
+/* Loading skeleton */
 .dash-skeleton {
   background: linear-gradient(90deg, var(--bg-elevated) 25%, var(--bg-hover) 50%, var(--bg-elevated) 75%);
   background-size: 200% 100%;
@@ -1033,7 +1031,7 @@ input[data-type="coord"] {
 }
 @keyframes shimmer { to { background-position: -200% 0; } }
 
-/* ── Stats strip ─────────────────────────────────────────── */
+/* Stats strip */
 .dash-stats {
   flex-shrink: 0;
   display: flex;

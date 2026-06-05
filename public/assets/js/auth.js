@@ -1,5 +1,6 @@
 const loginForm = document.getElementById('loginForm');
 const registerForm = document.getElementById('registerForm');
+const forgotPasswordForm = document.getElementById('forgotPasswordForm');
 const authMessage = document.getElementById('authMessage');
 const passwordToggles = document.querySelectorAll('.password-toggle-btn');
 let isSubmitting = false;
@@ -11,6 +12,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (registerForm) {
         registerForm.addEventListener('submit', handleRegisterSubmit);
+    }
+
+    if (forgotPasswordForm) {
+        forgotPasswordForm.addEventListener('submit', handleForgotPasswordSubmit);
     }
 
     passwordToggles.forEach(function(toggle) {
@@ -118,14 +123,45 @@ async function handleRegisterSubmit(event) {
 
 function togglePasswordVisibility(event) {
     const button = event.currentTarget;
-    const input = button.previousElementSibling;
+    const group = button.closest('.password-toggle');
+    const input = group ? group.querySelector('input') : null;
+
+    if (!input) {
+        return;
+    }
+
     if (input.type === 'password') {
         input.type = 'text';
         button.textContent = 'Hide';
+        button.setAttribute('aria-label', 'Hide password');
     } else {
         input.type = 'password';
         button.textContent = 'Show';
+        button.setAttribute('aria-label', 'Show password');
     }
+}
+
+function handleForgotPasswordSubmit(event) {
+    event.preventDefault();
+    clearFormErrors(forgotPasswordForm);
+    hideAuthMessage();
+
+    const formData = new FormData(forgotPasswordForm);
+    const data = Object.fromEntries(formData.entries());
+
+    if (!data.email) {
+        displayErrors({ email: 'Email is required.' }, forgotPasswordForm);
+        showAuthMessage('Please enter your email address.', 'error');
+        return;
+    }
+
+    if (!isValidEmail(data.email)) {
+        displayErrors({ email: 'Enter a valid email address.' }, forgotPasswordForm);
+        showAuthMessage('Please enter a valid email address.', 'error');
+        return;
+    }
+
+    showAuthMessage('Password reset is not available yet.', 'info');
 }
 
 function validateLoginForm(data) {
@@ -171,7 +207,6 @@ function isValidEmail(email) {
 }
 
 function displayErrors(errors, form) {
-    const subject = form.querySelector('.auth-title')?.textContent || 'Form';
     for (const field in errors) {
         const input = form.querySelector('[name="' + field + '"]');
         if (input) {

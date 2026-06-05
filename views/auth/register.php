@@ -7,10 +7,9 @@ require_once __DIR__ . '/../layouts/header.php';
 <div class="auth-container" role="main">
     <div class="auth-card" aria-labelledby="register-heading">
         <div class="auth-header">
-            <div class="auth-logo"></div>
-            <span class="eyebrow">Fast setup</span>
+            <span class="eyebrow">Register</span>
             <h1 id="register-heading" class="auth-title">Create your account</h1>
-            <p class="auth-subtitle">Register once and gain instant access to the Crime Map simulator and reporting tools.</p>
+            <p class="auth-subtitle">Fill in the form to create a new user account.</p>
         </div>
 
         <div id="authMessage" class="alert visually-hidden" role="status" aria-live="polite"></div>
@@ -50,7 +49,7 @@ require_once __DIR__ . '/../layouts/header.php';
                     placeholder="create a password"
                     autocomplete="new-password"
                 >
-                <button type="button" class="password-toggle-btn" aria-label="Toggle password visibility">Show</button>
+                <button type="button" class="password-toggle-btn" aria-label="Show password">Show</button>
             </div>
 
             <div class="form-group password-toggle">
@@ -63,7 +62,7 @@ require_once __DIR__ . '/../layouts/header.php';
                     placeholder="Repeat your password"
                     autocomplete="new-password"
                 >
-                <button type="button" class="password-toggle-btn" aria-label="Toggle password visibility">Show</button>
+                <button type="button" class="password-toggle-btn" aria-label="Show password">Show</button>
             </div>
 
             <button type="submit" class="btn btn-primary auth-btn">Create account</button>

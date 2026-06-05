@@ -7,10 +7,9 @@ require_once __DIR__ . '/../layouts/header.php';
 <div class="auth-container" role="main">
     <div class="auth-card" aria-labelledby="forgot-heading">
         <div class="auth-header">
-            <div class="auth-logo"></div>
-            <span class="eyebrow">Password recovery</span>
+            <span class="eyebrow">Password</span>
             <h1 id="forgot-heading" class="auth-title">Forgot your password?</h1>
-            <p class="auth-subtitle">Enter your email address and we'll send you a link to reset your password.</p>
+            <p class="auth-subtitle">Enter your email address.</p>
         </div>
 
         <div id="authMessage" class="alert visually-hidden" role="status" aria-live="polite"></div>

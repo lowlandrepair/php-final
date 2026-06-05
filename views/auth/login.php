@@ -7,10 +7,9 @@ require_once __DIR__ . '/../layouts/header.php';
 <div class="auth-container" role="main">
     <div class="auth-card" aria-labelledby="login-heading">
         <div class="auth-header">
-            <div class="auth-logo"></div>
-            <span class="eyebrow">Secure login</span>
-            <h1 id="login-heading" class="auth-title">Sign in to Crime Map</h1>
-            <p class="auth-subtitle">Access the incident dashboard, map controls, and account management with a fast, secure login.</p>
+            <span class="eyebrow">Login</span>
+            <h1 id="login-heading" class="auth-title">Sign in</h1>
+            <p class="auth-subtitle">Enter your email and password to continue.</p>
         </div>
 
         <div id="authMessage" class="alert visually-hidden" role="status" aria-live="polite"></div>
@@ -29,9 +28,9 @@ require_once __DIR__ . '/../layouts/header.php';
             </div>
 
             <div class="form-group password-toggle">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div class="form-row">
                     <label for="password" class="form-label">Password</label>
-                    <a href="/php-final/public/index.php?route=forgot-password" style="font-size: 12px; color: var(--primary-color); text-decoration: none;">Forgot password?</a>
+                    <a href="/php-final/public/index.php?route=forgot-password" class="form-link">Forgot password?</a>
                 </div>
                 <input
                     type="password"
@@ -41,7 +40,7 @@ require_once __DIR__ . '/../layouts/header.php';
                     placeholder="Enter your password"
                     autocomplete="current-password"
                 >
-                <button type="button" class="password-toggle-btn" aria-label="Toggle password visibility">Show</button>
+                <button type="button" class="password-toggle-btn" aria-label="Show password">Show</button>
             </div>
 
             <button type="submit" class="btn btn-primary auth-btn">Sign in</button>

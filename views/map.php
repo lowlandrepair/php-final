@@ -26,7 +26,6 @@ require_once __DIR__ . '/layouts/header.php';
             <?php endif; ?>
             <a href="/php-final/public/index.php?route=logout" class="btn btn-secondary btn-sm logout-btn">
                 <span>Sign out</span>
-                <span class="logout-icon">➔</span>
             </a>
         </div>
     </header>
@@ -85,7 +84,7 @@ require_once __DIR__ . '/layouts/header.php';
                                 </div>
                             </div>
                             <button type="button" class="btn btn-success w-100 mt-2 d-none" id="btnResolveIncident">
-                                ✓ Resolve Incident
+                                Resolve Incident
                             </button>
                         </div>
                     </div>

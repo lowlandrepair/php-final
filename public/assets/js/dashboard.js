@@ -1,11 +1,11 @@
 /* ============================================================
-   Admin Dashboard — San Andreas Crime Map
-   dashboard.js — Full CRUD + UI engine
+   Admin Dashboard - San Andreas Crime Map
+   dashboard.js - CRUD and UI
    ============================================================ */
 
 'use strict';
 
-/* ── Validation helpers (lightweight Zod-style schema) ────── */
+/* Validation helpers */
 const Schema = {
   string(v, min = 1, max = 200) {
     if (typeof v !== 'string') return 'Must be a string';
@@ -38,8 +38,7 @@ const Schema = {
   }
 };
 
-/* ── Audit trail builder ────────────────────────────────────
-   Records who did what and when on every mutation.           */
+/* Audit trail builder */
 const AuditTrail = {
   _log: [],
   record(action, payload, userId, userName) {
@@ -63,18 +62,18 @@ const AuditTrail = {
   }
 };
 
-/* ── Toast system ────────────────────────────────────────── */
+/* Toast system */
 const Toast = {
   wrap: null,
   init() { this.wrap = document.getElementById('toastWrap'); },
   show(msg, type = 'info', duration = 3500) {
-    const icons = { success: '✓', error: '✕', info: 'ℹ' };
+    const icons = { success: 'OK', error: 'ERR', info: 'INFO' };
     const t = document.createElement('div');
     t.className = `dash-toast ${type}`;
     t.innerHTML = `
-      <span class="toast-icon">${icons[type] ?? 'ℹ'}</span>
+      <span class="toast-icon">${icons[type] ?? 'INFO'}</span>
       <span class="toast-msg">${msg}</span>
-      <button class="toast-close" aria-label="Dismiss">×</button>`;
+      <button class="toast-close" aria-label="Dismiss">x</button>`;
     t.querySelector('.toast-close').addEventListener('click', () => this._remove(t));
     this.wrap.appendChild(t);
     setTimeout(() => this._remove(t), duration);
@@ -85,7 +84,7 @@ const Toast = {
   }
 };
 
-/* ── Confirm dialog ──────────────────────────────────────── */
+/* Confirm dialog */
 const Confirm = {
   overlay: null,
   okBtn:   null,
@@ -109,7 +108,7 @@ const Confirm = {
   }
 };
 
-/* ── API client ──────────────────────────────────────────── */
+/* API client */
 const API = {
   base: '/php-final/public/index.php?route=',
   async request(route, method = 'GET', body = null) {
@@ -128,7 +127,7 @@ const API = {
   deleteIncident(id)   { return this.request(`api/incidents/${id}`, 'DELETE'); },
 };
 
-/* ── State ───────────────────────────────────────────────── */
+/* State */
 const State = {
   incidents:    [],
   filtered:     [],
@@ -145,7 +144,7 @@ const State = {
   formData:     {},
 };
 
-/* ── Severity helpers ────────────────────────────────────── */
+/* Severity helpers */
 const SEV_COLORS = ['','#3fb950','#d2a624','#d29922','#f0883e','#f85149'];
 const SEV_LABELS = ['','Low','Guarded','Elevated','High','Critical'];
 
@@ -159,7 +158,7 @@ function renderSevPips(sev) {
   return html;
 }
 
-/* ── Table renderer ──────────────────────────────────────── */
+/* Table renderer */
 function applyFilters() {
   let list = [...State.incidents];
 
@@ -291,7 +290,7 @@ function renderTable() {
   });
 }
 
-/* ── Bulk bar ────────────────────────────────────────────── */
+/* Bulk bar */
 function updateBulkBar() {
   const bar    = document.getElementById('bulkBar');
   const normal = document.getElementById('normalToolbar');
@@ -311,7 +310,7 @@ function updateBulkBar() {
   if (hdr) hdr.checked = all;
 }
 
-/* ── Detail panel ────────────────────────────────────────── */
+/* Detail panel */
 function openDetail(id) {
   const inc = State.incidents.find(i => i.id === id);
   if (!inc) return;
@@ -344,7 +343,7 @@ function openDetail(id) {
     </div>
     <div class="dash-detail-field">
       <div class="dash-detail-label">Description</div>
-      <div class="dash-detail-value" style="color:var(--txt-secondary)">${escHtml(inc.description || '—')}</div>
+      <div class="dash-detail-value" style="color:var(--txt-secondary)">${escHtml(inc.description || '-')}</div>
     </div>
 
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
@@ -367,7 +366,7 @@ function openDetail(id) {
         <div class="dash-detail-value">
           ${renderSevPips(inc.severity)}
           <span style="font-size:11px;color:var(--txt-secondary);margin-top:3px;display:block">
-            Level ${inc.severity} — ${SEV_LABELS[inc.severity]}
+            Level ${inc.severity} - ${SEV_LABELS[inc.severity]}
           </span>
         </div>
       </div>
@@ -429,7 +428,7 @@ function closeDetail() {
     </div>`;
 }
 
-/* ── Drawer multi-step form ──────────────────────────────── */
+/* Drawer form */
 function openDrawer(mode, id = null) {
   State.drawerMode = mode;
   State.editId     = id;
@@ -527,8 +526,8 @@ function goToStep(step) {
 function renderAuditPreview() {
   const box = document.getElementById('auditPreviewBox');
   if (!box) return;
-  const userId   = window.__ADMIN_ID   ?? '—';
-  const userName = window.__ADMIN_NAME ?? '—';
+  const userId   = window.__ADMIN_ID   ?? '-';
+  const userName = window.__ADMIN_NAME ?? '-';
   const now      = new Date().toLocaleString('en-GB', { dateStyle:'medium', timeStyle:'short' });
   const action   = State.drawerMode === 'create' ? 'CREATE' : 'UPDATE';
   box.innerHTML = `
@@ -540,7 +539,7 @@ function renderAuditPreview() {
     <div class="dash-audit-row"><span>Target ID</span><span>${State.editId ?? 'pending'}</span></div>`;
 }
 
-/* ── Per-step validation ─────────────────────────────────── */
+/* Per-step validation */
 function validateStep(step) {
   let valid = true;
 
@@ -573,7 +572,7 @@ function validateStep(step) {
   return valid;
 }
 
-/* ── Collect form payload ────────────────────────────────── */
+/* Collect form payload */
 function collectPayload() {
   const sev  = document.querySelector('.dform-sev-btn[class*="sel-"]');
   const type = document.querySelector('input[name="f-type"]:checked');
@@ -589,7 +588,7 @@ function collectPayload() {
   };
 }
 
-/* ── Save (create or update) ─────────────────────────────── */
+/* Save create or update */
 async function saveDrawer() {
   const payload  = collectPayload();
   const saveBtn  = document.getElementById('drawerSave');
@@ -597,7 +596,7 @@ async function saveDrawer() {
   const userName = window.__ADMIN_NAME ?? 'Admin';
 
   saveBtn.disabled = true;
-  saveBtn.innerHTML = '<span class="btn-spinner"></span> Saving…';
+  saveBtn.innerHTML = '<span class="btn-spinner"></span> Saving...';
 
   try {
     let res;
@@ -627,11 +626,11 @@ async function saveDrawer() {
     console.error('[Dashboard] save error:', err);
   } finally {
     saveBtn.disabled = false;
-    saveBtn.innerHTML = '✓ Save Incident';
+    saveBtn.innerHTML = 'Save Incident';
   }
 }
 
-/* ── Delete single ───────────────────────────────────────── */
+/* Delete single */
 async function deleteSingle(id) {
   const inc = State.incidents.find(i => i.id === id);
   const ok  = await Confirm.ask(
@@ -652,7 +651,7 @@ async function deleteSingle(id) {
   }
 }
 
-/* ── Bulk operations ─────────────────────────────────────── */
+/* Bulk operations */
 async function bulkDelete() {
   const ids = [...State.selected];
   if (!ids.length) return;
@@ -726,7 +725,7 @@ function bulkExportCSV() {
   Toast.show(`Exported ${rows.length} records`, 'success');
 }
 
-/* ── Load data ───────────────────────────────────────────── */
+/* Load data */
 async function loadIncidents() {
   try {
     const res = await API.getIncidents();
@@ -742,7 +741,7 @@ async function loadIncidents() {
   }
 }
 
-/* ── Sort ────────────────────────────────────────────────── */
+/* Sort */
 function bindSortHeaders() {
   document.querySelectorAll('.dash-table thead th.sortable').forEach(th => {
     th.addEventListener('click', () => {
@@ -755,13 +754,13 @@ function bindSortHeaders() {
       }
       document.querySelectorAll('.dash-table thead th').forEach(h => h.classList.remove('sorted'));
       th.classList.add('sorted');
-      th.querySelector('.sort-icon').textContent = State.sortDir === 'asc' ? '↑' : '↓';
+      th.querySelector('.sort-icon').textContent = State.sortDir === 'asc' ? 'asc' : 'desc';
       renderTable();
     });
   });
 }
 
-/* ── Escape HTML ─────────────────────────────────────────── */
+/* Escape HTML */
 function escHtml(str) {
   return String(str ?? '')
     .replace(/&/g,'&amp;')
@@ -771,7 +770,7 @@ function escHtml(str) {
     .replace(/'/g,'&#39;');
 }
 
-/* ── Boot ────────────────────────────────────────────────── */
+/* Boot */
 document.addEventListener('DOMContentLoaded', async () => {
 
   Toast.init();
