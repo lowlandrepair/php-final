@@ -15,21 +15,23 @@ This is a PHP and MySQL final project. It has login, register, sessions, user ro
 
 ## Main Folders
 
-- `config` has database, app, and session setup.
+- `auth` has the login, register, logout, and forgot-password pages.
+- `admin` has the admin CRUD dashboard.
 - `database` has `schema.sql` for creating the database tables.
-- `public` has the main `index.php`, CSS, JavaScript, and API entry point.
-- `src/App` has the PHP classes for login, users, middleware, and incidents.
-- `views` has the HTML/PHP pages.
+- `assets` has the CSS and JavaScript files.
+- `config.php` has database connection.
+- `api.php` handles AJAX endpoints.
+- `map.php` renders the live map.
 
 ## How To Run It
 
 1. Start Apache and MySQL in XAMPP, WAMP, or Laragon.
 2. Import `database/schema.sql` into MySQL.
-3. Check the database settings in `config/config.php`.
+3. Check the database settings in `config.php`.
 4. Open this URL:
 
 ```text
-http://localhost/php-final/public/index.php?route=login
+http://localhost/php-final/index.php
 ```
 
 ## Default Admin
@@ -43,24 +45,22 @@ Password: admin123
 
 ## How Login Works
 
-1. The login page is loaded from `views/auth/login.php`.
-2. `public/assets/js/auth.js` checks the form.
-3. JavaScript sends the email and password to `public/index.php?route=login`.
-4. `AuthController` checks the user.
-5. `User` gets the user from the database.
-6. PHP checks the password with `password_verify`.
-7. The user is saved in the session.
-8. The app redirects the user to `dashboard` or `map`.
+1. The login page is loaded from `auth/login.php`.
+2. `assets/js/auth.js` checks the form.
+3. JavaScript sends the email and password to `auth/login.php` via POST.
+4. `auth/login.php` checks the user in the database directly.
+5. PHP checks the password with `password_verify`.
+6. The user is saved in the session.
+7. The app redirects the user to `admin/dashboard.php` or `map.php`.
 
 ## How Register Works
 
-1. The register page is loaded from `views/auth/register.php`.
+1. The register page is loaded from `auth/register.php`.
 2. JavaScript checks the name, email, password, and confirm password.
-3. The data is sent to `public/index.php?route=register`.
-4. `AuthController` validates the data again.
-5. `User` creates the account in MySQL.
-6. The password is hashed before it is saved.
-7. The new user is logged in and sent to the map.
+3. The data is sent to `auth/register.php` via POST.
+4. `auth/register.php` validates the data and checks for duplicates.
+5. The password is hashed before it is saved in MySQL.
+6. The new user is logged in and sent to `map.php`.
 
 ## Notes
 

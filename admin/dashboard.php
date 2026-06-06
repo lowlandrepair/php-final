@@ -1,8 +1,12 @@
 <?php
-require_once __DIR__ . '/../../config/config.php';
-require_once __DIR__ . '/../../config/session.php';
-// Access is already enforced by AuthMiddleware::requireAdmin() in index.php
-// before this view is ever included. No redundant check needed here.
+require_once '../config.php';
+
+// Access check: only admins allowed
+if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'admin') {
+    header("Location: ../auth/login.php");
+    exit;
+}
+
 $adminId   = (int)($_SESSION['user']['id']        ?? 0);
 $adminName = htmlspecialchars($_SESSION['user']['full_name'] ?? 'Admin', ENT_QUOTES, 'UTF-8');
 $adminInitial = strtoupper(substr($_SESSION['user']['full_name'] ?? 'A', 0, 1));
@@ -12,14 +16,13 @@ $adminInitial = strtoupper(substr($_SESSION['user']['full_name'] ?? 'A', 0, 1));
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <meta name="description" content="Admin CRUD dashboard - <?php echo htmlspecialchars(APP_NAME); ?> Crime Mapping Platform">
-  <title>Admin Dashboard - <?php echo htmlspecialchars(APP_NAME); ?></title>
+  <meta name="description" content="Admin CRUD dashboard - San Andreas Crime Mapping Platform">
+  <title>Admin Dashboard - San Andreas</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="/php-final/public/assets/css/dashboard.css">
+  <link rel="stylesheet" href="../assets/css/dashboard.css">
 
-  <!-- Pass PHP session data to JS safely -->
   <script>
     window.__ADMIN_ID   = <?php echo json_encode($adminId); ?>;
     window.__ADMIN_NAME = <?php echo json_encode($adminName); ?>;
@@ -30,16 +33,16 @@ $adminInitial = strtoupper(substr($_SESSION['user']['full_name'] ?? 'A', 0, 1));
 
 <!-- Top header -->
 <header class="dash-header" role="banner">
-  <a href="/php-final/public/index.php?route=dashboard" class="dash-logo" aria-label="San Andreas Crime Map Admin">
+  <a href="dashboard.php" class="dash-logo" aria-label="San Andreas Crime Map Admin">
     <div class="dash-logo-icon" aria-hidden="true"></div>
-    <?php echo htmlspecialchars(APP_NAME); ?>
+    San Andreas
   </a>
 
   <span class="dash-badge-admin" aria-label="Administrator access">Admin</span>
 
   <div class="dash-header-sep"></div>
 
-  <a href="/php-final/public/index.php?route=map" style="font-size:12px;color:var(--txt-secondary);text-decoration:none;margin-right:4px;" aria-label="Go to live map">
+  <a href="../map.php" style="font-size:12px;color:var(--txt-secondary);text-decoration:none;margin-right:4px;" aria-label="Go to live map">
     Live Map
   </a>
 
@@ -50,7 +53,7 @@ $adminInitial = strtoupper(substr($_SESSION['user']['full_name'] ?? 'A', 0, 1));
     <?php echo $adminName; ?>
   </div>
 
-  <a href="/php-final/public/index.php?route=logout" class="dash-btn-logout" aria-label="Sign out">
+  <a href="../auth/logout.php" class="dash-btn-logout" aria-label="Sign out">
     Sign out
   </a>
 </header>
@@ -242,16 +245,18 @@ $adminInitial = strtoupper(substr($_SESSION['user']['full_name'] ?? 'A', 0, 1));
             Threat Level <span class="req" aria-hidden="true">*</span>
           </div>
           <div class="dform-sev-track" role="group" aria-label="Select severity 1 to 5">
-            <button type="button" class="dform-sev-btn" data-sev="1"
-                    aria-label="Severity 1 - Low" title="Low">1</button>
-            <button type="button" class="dform-sev-btn" data-sev="2"
-                    aria-label="Severity 2 - Guarded" title="Guarded">2</button>
-            <button type="button" class="dform-sev-btn" data-sev="3"
-                    aria-label="Severity 3 - Elevated" title="Elevated">3</button>
-            <button type="button" class="dform-sev-btn" data-sev="4"
-                    aria-label="Severity 4 - High" title="High">4</button>
-            <button type="button" class="dform-sev-btn" data-sev="5"
-                    aria-label="Severity 5 - Critical" title="Critical">5</button>
+            <?php
+            $sevButtons = [
+                1 => 'Low',
+                2 => 'Guarded',
+                3 => 'Elevated',
+                4 => 'High',
+                5 => 'Critical'
+            ];
+            foreach ($sevButtons as $sev => $name) {
+                echo "            <button type=\"button\" class=\"dform-sev-btn\" data-sev=\"$sev\" aria-label=\"Severity $sev - $name\" title=\"$name\">$sev</button>\n";
+            }
+            ?>
           </div>
           <div class="dform-help">1 = Low, 5 = Critical</div>
           <div class="dform-error" id="sev-err" role="alert" aria-live="polite"></div>
@@ -348,7 +353,6 @@ $adminInitial = strtoupper(substr($_SESSION['user']['full_name'] ?? 'A', 0, 1));
 
         <!-- Audit trail preview (populated by JS) -->
         <div class="dash-audit-box" id="auditPreviewBox" aria-label="Audit trail preview" role="region">
-          <div class="dash-audit-box-title">Audit Trail Preview</div>
           <div class="dash-audit-row"><span>Loading...</span><span></span></div>
         </div>
       </div>
@@ -392,6 +396,6 @@ $adminInitial = strtoupper(substr($_SESSION['user']['full_name'] ?? 'A', 0, 1));
 <!-- Toast container -->
 <div class="dash-toast-wrap" id="toastWrap" aria-live="assertive" aria-atomic="false"></div>
 
-<script src="/php-final/public/assets/js/dashboard.js"></script>
+<script src="../assets/js/dashboard.js"></script>
 </body>
 </html>

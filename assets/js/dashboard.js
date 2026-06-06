@@ -110,21 +110,21 @@ const Confirm = {
 
 /* API client */
 const API = {
-  base: '/php-final/public/index.php?route=',
-  async request(route, method = 'GET', body = null) {
+  base: '../api.php?action=',
+  async request(action, method = 'GET', body = null) {
     const opts = {
       method,
       headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
     };
     if (body) opts.body = JSON.stringify(body);
-    const res = await fetch(this.base + route, opts);
+    const res = await fetch(this.base + action, opts);
     const json = await res.json().catch(() => ({ success: false, message: 'Invalid server response' }));
     return json;
   },
-  getIncidents()       { return this.request('api/incidents'); },
-  createIncident(data) { return this.request('api/incidents', 'POST', data); },
-  updateIncident(id, data) { return this.request(`api/incidents/${id}`, 'PUT', data); },
-  deleteIncident(id)   { return this.request(`api/incidents/${id}`, 'DELETE'); },
+  getIncidents()       { return this.request('get_incidents'); },
+  createIncident(data) { return this.request('create_incident', 'POST', data); },
+  updateIncident(id, data) { return this.request(`update_incident&id=${id}`, 'POST', data); },
+  deleteIncident(id)   { return this.request(`delete_incident&id=${id}`, 'POST'); },
 };
 
 /* State */

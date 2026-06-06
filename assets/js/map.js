@@ -136,9 +136,9 @@ function switchTab(tabName) {
 
 async function fetchIncidents() {
     try {
-        const response = await fetch('/php-final/public/index.php?route=api/incidents');
+        const response = await fetch('api.php?action=get_incidents');
         if (response.status === 401) {
-            window.location.href = '/php-final/public/index.php?route=login';
+            window.location.href = 'auth/login.php';
             return;
         }
 
@@ -402,7 +402,7 @@ async function handleDispatchSubmit() {
     submitBtn.innerHTML = '<span class="spinner"></span> Dispatching...';
 
     try {
-        const response = await fetch('/php-final/public/index.php?route=api/incidents/dispatch', {
+        const response = await fetch('api.php?action=dispatch_incident', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -437,7 +437,7 @@ async function handleResolveSubmit() {
     submitBtn.innerHTML = '<span class="spinner"></span> Resolving...';
 
     try {
-        const response = await fetch('/php-final/public/index.php?route=api/incidents/resolve', {
+        const response = await fetch('api.php?action=resolve_incident', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -489,7 +489,7 @@ async function handleReportSubmit(e) {
     submitBtn.innerHTML = '<span class="spinner"></span> Saving Report...';
 
     try {
-        const response = await fetch('/php-final/public/index.php?route=api/incidents', {
+        const response = await fetch('api.php?action=create_incident', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
