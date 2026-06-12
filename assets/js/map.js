@@ -4,6 +4,7 @@ let markers = {};
 let activeIncidentId = null;
 let tempClickMarker = null;
 let pollInterval = null;
+const isAdmin = window.APP_USER_ROLE === 'admin';
 
 const tabIncidents = document.getElementById('tabIncidents');
 const tabReport = document.getElementById('tabReport');
@@ -369,12 +370,12 @@ function showIncidentDetails(incident) {
         dispatchInfoBox.classList.add('d-none');
     }
 
-    if (incident.status === 'active') {
+    if (isAdmin && incident.status === 'active') {
         dispatchForm.classList.remove('d-none');
         btnResolveIncident.classList.add('d-none');
         
         unitTypeSelect.value = incident.incident_type;
-    } else if (incident.status === 'dispatched') {
+    } else if (isAdmin && incident.status === 'dispatched') {
         dispatchForm.classList.add('d-none');
         btnResolveIncident.classList.remove('d-none');
     } else {

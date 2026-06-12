@@ -1,11 +1,10 @@
 <?php
 require_once '../config.php';
 
-// Handle AJAX POST request
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Support JSON input
     $input = file_get_contents('php://input');
     $data = json_decode($input, true);
+
     if (!$data) {
         $data = $_POST;
     }
@@ -30,7 +29,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    // Set session
     $_SESSION['user'] = [
         'id' => $user['id'],
         'email' => $user['email'],
@@ -45,10 +43,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit;
 }
 
-// Redirect if already logged in
 if (isset($_SESSION['user'])) {
-    $redirect = $_SESSION['user']['role'] === 'admin' ? '../admin/dashboard.php' : '../map.php';
-    header("Location: $redirect");
+    if ($_SESSION['user']['role'] === 'admin') {
+        header("Location: ../admin/dashboard.php");
+        exit;
+    }
+
+    header("Location: ../map.php");
     exit;
 }
 ?>

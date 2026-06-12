@@ -1,8 +1,8 @@
-/* Admin dashboard - San Andreas Crime Map */
+
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300..700;1,14..32,300..700&family=JetBrains+Mono:wght@400;500&display=swap');
 
-/* Root tokens */
+
 :root {
   --bg:          #0d1117;
   --bg-surface:  #161b22;
@@ -47,10 +47,10 @@
   --t-slow:   320ms cubic-bezier(.4,0,.2,1);
 
   --header-h: 56px;
-  --sidebar-w: 0px; /* no sidebar in this layout */
+  --sidebar-w: 0px; 
 }
 
-/* Reset and base */
+
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 html, body {
@@ -63,7 +63,7 @@ html, body {
   overflow: hidden;
 }
 
-/* Topbar */
+
 .dash-header {
   position: fixed;
   inset: 0 0 auto 0;
@@ -157,7 +157,7 @@ html, body {
   background: rgba(248,81,73,.08);
 }
 
-/* Main layout */
+
 .dash-layout {
   display: grid;
   grid-template-columns: 1fr 340px;
@@ -167,7 +167,7 @@ html, body {
   overflow: hidden;
 }
 
-/* Left panel table */
+
 .dash-panel-left {
   display: flex;
   flex-direction: column;
@@ -175,7 +175,7 @@ html, body {
   border-right: 1px solid var(--border);
 }
 
-/* Toolbar */
+
 .dash-toolbar {
   flex-shrink: 0;
   display: flex;
@@ -204,7 +204,7 @@ html, body {
 
 .dash-toolbar-spacer { flex: 1; }
 
-/* Search */
+
 .dash-search-wrap {
   position: relative;
 }
@@ -235,7 +235,7 @@ html, body {
 }
 .dash-search::placeholder { color: var(--txt-muted); }
 
-/* Filter chips */
+
 .dash-filters {
   display: flex;
   align-items: center;
@@ -260,7 +260,7 @@ html, body {
   color: var(--blue);
 }
 
-/* Add button */
+
 .dash-btn-add {
   background: var(--blue-dk);
   border: none;
@@ -280,7 +280,7 @@ html, body {
 .dash-btn-add:hover { background: var(--blue); transform: scale(1.02); }
 .dash-btn-add:active { transform: scale(0.98); }
 
-/* Bulk action bar (replaces toolbar when rows selected) */
+
 .dash-bulk-bar {
   display: none;
   align-items: center;
@@ -313,7 +313,7 @@ html, body {
 .dash-bulk-btn:hover { color: var(--txt-primary); border-color: var(--txt-secondary); }
 .dash-bulk-btn.danger:hover { color: var(--red); border-color: var(--red); background: rgba(248,81,73,.08); }
 
-/* Table */
+
 .dash-table-wrap {
   flex: 1;
   overflow-y: auto;
@@ -373,7 +373,7 @@ html, body {
   font-variant-numeric: tabular-nums;
 }
 
-/* Checkbox column */
+
 .dash-cb-cell { width: 32px; padding: 0 8px !important; }
 .dash-cb {
   width: 14px; height: 14px;
@@ -381,7 +381,7 @@ html, body {
   cursor: pointer;
 }
 
-/* Type pill */
+
 .dash-type-pill {
   display: inline-flex;
   align-items: center;
@@ -397,7 +397,7 @@ html, body {
 .dash-type-pill.fire    { background: rgba(240,136,62,.12);   color: var(--type-fire);    border: 1px solid rgba(240,136,62,.2); }
 .dash-type-pill.medical { background: rgba(63,185,80,.12);    color: var(--type-medical); border: 1px solid rgba(63,185,80,.2); }
 
-/* Status pill */
+
 .dash-status-pill {
   display: inline-flex;
   align-items: center;
@@ -420,7 +420,7 @@ html, body {
 .dash-status-pill.dispatched { color: var(--amber);  background: rgba(210,153,34,.1); }
 .dash-status-pill.resolved   { color: var(--txt-muted); background: rgba(255,255,255,.04); }
 
-/* Severity bar */
+
 .dash-sev {
   display: flex;
   align-items: center;
@@ -437,7 +437,7 @@ html, body {
   transition: background var(--t-fast);
 }
 
-/* Row actions */
+
 .dash-row-actions {
   display: flex;
   gap: 4px;
@@ -460,7 +460,7 @@ html, body {
 .dash-row-btn:hover { color: var(--blue); border-color: var(--blue); background: rgba(88,166,255,.08); }
 .dash-row-btn.del:hover { color: var(--red); border-color: var(--red); background: rgba(248,81,73,.08); }
 
-/* Empty state */
+
 .dash-empty {
   text-align: center;
   padding: 48px 24px;
@@ -469,7 +469,7 @@ html, body {
 .dash-empty-icon { font-size: 36px; margin-bottom: 12px; }
 .dash-empty p { font-size: 13px; }
 
-/* Right panel detail / map */
+
 .dash-panel-right {
   display: flex;
   flex-direction: column;
@@ -524,7 +524,7 @@ html, body {
 }
 .dash-detail-placeholder-icon { font-size: 40px; opacity: .4; }
 
-/* Map embed container */
+
 .dash-map-wrap {
   width: 100%;
   height: 200px;
@@ -542,7 +542,7 @@ html, body {
   display: block;
 }
 
-/* Detail fields */
+
 .dash-detail-field { margin-bottom: 14px; }
 .dash-detail-label {
   font-size: 10px;
@@ -620,7 +620,7 @@ html, body {
 .dash-detail-btn:hover { color: var(--blue); border-color: var(--blue); background: rgba(88,166,255,.08); }
 .dash-detail-btn.danger:hover { color: var(--red); border-color: var(--red); background: rgba(248,81,73,.08); }
 
-/* Side drawer */
+
 .dash-drawer-overlay {
   position: fixed;
   inset: 0;
@@ -670,7 +670,7 @@ html, body {
 }
 .dash-drawer-close:hover { color: var(--txt-primary); }
 
-/* Step indicator */
+
 .dash-steps {
   flex-shrink: 0;
   display: flex;
@@ -731,7 +731,7 @@ html, body {
 .dash-step.active .dash-step-label { color: var(--blue); }
 .dash-step.done  .dash-step-label  { color: var(--green); }
 
-/* Drawer body / steps */
+
 .dash-drawer-body {
   flex: 1;
   overflow-y: auto;
@@ -743,7 +743,7 @@ html, body {
 .dash-step-panel { display: none; }
 .dash-step-panel.active { display: block; }
 
-/* Form elements */
+
 .dform-group { margin-bottom: 16px; }
 .dform-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .dform-label {
@@ -786,7 +786,7 @@ html, body {
 
 .dform-select option { background: var(--bg-surface); }
 
-/* Severity selector */
+
 .dform-sev-track {
   display: flex;
   gap: 6px;
@@ -812,7 +812,7 @@ html, body {
 .dform-sev-btn.sel-4 { border-color: var(--sev-4); color: var(--sev-4); background: rgba(240,136,62,.08); }
 .dform-sev-btn.sel-5 { border-color: var(--sev-5); color: var(--sev-5); background: rgba(248,81,73,.08); }
 
-/* Type radio pills */
+
 .dform-type-row { display: flex; gap: 8px; }
 .dform-type-label {
   flex: 1;
@@ -834,7 +834,7 @@ html, body {
 .dform-type-label.fire-sel    { border-color: var(--type-fire);    color: var(--type-fire);    background: rgba(240,136,62,.08); }
 .dform-type-label.medical-sel { border-color: var(--type-medical); color: var(--type-medical); background: rgba(63,185,80,.08); }
 
-/* Drawer footer */
+
 .dash-drawer-foot {
   flex-shrink: 0;
   padding: 14px 20px;
@@ -869,7 +869,7 @@ html, body {
 .dash-drawer-foot-btn.secondary:hover { color: var(--txt-primary); border-color: var(--txt-secondary); }
 .dash-drawer-foot-btn:disabled { opacity: .45; cursor: not-allowed; transform: none; }
 
-/* Spinner in button */
+
 .btn-spinner {
   display: inline-block;
   width: 13px; height: 13px;
@@ -880,7 +880,7 @@ html, body {
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* Toast notifications */
+
 .dash-toast-wrap {
   position: fixed;
   bottom: 20px;
@@ -928,7 +928,7 @@ html, body {
   to { opacity: 0; transform: translateX(12px); height: 0; padding: 0; margin: 0; }
 }
 
-/* Confirm dialog */
+
 .dash-confirm-overlay {
   position: fixed; inset: 0;
   background: rgba(0,0,0,.7);
@@ -973,7 +973,7 @@ html, body {
 .dash-confirm-ok { background: var(--red); color: #fff; }
 .dash-confirm-ok:hover { filter: brightness(1.1); }
 
-/* Audit trail note in drawer */
+
 .dash-audit-box {
   background: var(--bg-elevated);
   border: 1px solid var(--border);
@@ -1004,24 +1004,24 @@ html, body {
   color: var(--txt-muted);
 }
 
-/* Scrollbar global */
+
 * { scrollbar-width: thin; scrollbar-color: var(--bg-elevated) transparent; }
 
-/* Focus rings */
+
 :focus-visible {
   outline: 2px solid var(--blue);
   outline-offset: 2px;
   border-radius: var(--radius-sm);
 }
 
-/* Coordinate inputs */
+
 input[data-type="coord"] {
   font-family: 'JetBrains Mono', monospace;
   font-size: 12px;
   font-variant-numeric: tabular-nums;
 }
 
-/* Loading skeleton */
+
 .dash-skeleton {
   background: linear-gradient(90deg, var(--bg-elevated) 25%, var(--bg-hover) 50%, var(--bg-elevated) 75%);
   background-size: 200% 100%;
@@ -1031,7 +1031,7 @@ input[data-type="coord"] {
 }
 @keyframes shimmer { to { background-position: -200% 0; } }
 
-/* Stats strip */
+
 .dash-stats {
   flex-shrink: 0;
   display: flex;
@@ -1059,3 +1059,4 @@ input[data-type="coord"] {
 .dash-stat-item.active .dash-stat-val { color: var(--green); }
 .dash-stat-item.disp   .dash-stat-val { color: var(--amber); }
 .dash-stat-item.res    .dash-stat-val { color: var(--txt-muted); }
+

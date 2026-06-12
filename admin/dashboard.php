@@ -1,13 +1,12 @@
 <?php
 require_once '../config.php';
 
-// Access check: only admins allowed
 if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'admin') {
     header("Location: ../auth/login.php");
     exit;
 }
 
-$adminId   = (int)($_SESSION['user']['id']        ?? 0);
+$adminId = (int)($_SESSION['user']['id'] ?? 0);
 $adminName = htmlspecialchars($_SESSION['user']['full_name'] ?? 'Admin', ENT_QUOTES, 'UTF-8');
 $adminInitial = strtoupper(substr($_SESSION['user']['full_name'] ?? 'A', 0, 1));
 ?>
@@ -31,7 +30,6 @@ $adminInitial = strtoupper(substr($_SESSION['user']['full_name'] ?? 'A', 0, 1));
 </head>
 <body>
 
-<!-- Top header -->
 <header class="dash-header" role="banner">
   <a href="dashboard.php" class="dash-logo" aria-label="San Andreas Crime Map Admin">
     <div class="dash-logo-icon" aria-hidden="true"></div>
@@ -58,13 +56,10 @@ $adminInitial = strtoupper(substr($_SESSION['user']['full_name'] ?? 'A', 0, 1));
   </a>
 </header>
 
-<!-- Main layout -->
 <main class="dash-layout" role="main">
 
-  <!-- Left panel -->
   <section class="dash-panel-left" aria-label="Incidents management panel">
 
-    <!-- Stats strip -->
     <div class="dash-stats" role="region" aria-label="Incident statistics">
       <div class="dash-stat-item total">
         <span class="dash-stat-val" id="statTotal">-</span>
@@ -84,7 +79,6 @@ $adminInitial = strtoupper(substr($_SESSION['user']['full_name'] ?? 'A', 0, 1));
       </div>
     </div>
 
-    <!-- Bulk action bar (appears when rows are selected) -->
     <div class="dash-bulk-bar" id="bulkBar" role="toolbar" aria-label="Bulk actions">
       <span class="dash-bulk-count" id="bulkCount" aria-live="polite"></span>
       <button class="dash-bulk-btn" id="bulkResolveBtn" aria-label="Mark selected as resolved">
@@ -101,12 +95,10 @@ $adminInitial = strtoupper(substr($_SESSION['user']['full_name'] ?? 'A', 0, 1));
       </button>
     </div>
 
-    <!-- Normal toolbar -->
     <div class="dash-toolbar" id="normalToolbar" role="toolbar" aria-label="Table controls">
       <span class="dash-toolbar-title">Incidents</span>
       <span class="dash-toolbar-count" id="toolbarCount" aria-live="polite">-</span>
 
-      <!-- Status filters -->
       <div class="dash-filters" role="group" aria-label="Filter by status">
         <button class="dash-filter-btn active" data-group="status" data-val="all" aria-pressed="true">All</button>
         <button class="dash-filter-btn" data-group="status" data-val="active">Active</button>
@@ -114,7 +106,6 @@ $adminInitial = strtoupper(substr($_SESSION['user']['full_name'] ?? 'A', 0, 1));
         <button class="dash-filter-btn" data-group="status" data-val="resolved">Resolved</button>
       </div>
 
-      <!-- Type filters -->
       <div class="dash-filters" role="group" aria-label="Filter by type">
         <button class="dash-filter-btn active" data-group="type" data-val="all" aria-pressed="true">All Types</button>
         <button class="dash-filter-btn" data-group="type" data-val="police">Police</button>
@@ -124,7 +115,6 @@ $adminInitial = strtoupper(substr($_SESSION['user']['full_name'] ?? 'A', 0, 1));
 
       <div class="dash-toolbar-spacer"></div>
 
-      <!-- Search -->
       <div class="dash-search-wrap">
         <span class="dash-search-icon" aria-hidden="true">Search</span>
         <input type="search" id="searchInput" class="dash-search"
@@ -133,18 +123,15 @@ $adminInitial = strtoupper(substr($_SESSION['user']['full_name'] ?? 'A', 0, 1));
                autocomplete="off">
       </div>
 
-      <!-- Export all -->
       <button class="dash-row-btn" id="exportAllBtn" aria-label="Export all to CSV" style="padding:6px 12px;opacity:.7">
         CSV
       </button>
 
-      <!-- Add new -->
       <button class="dash-btn-add" id="addBtn" aria-label="Create new incident">
         <span aria-hidden="true">+</span> New Incident
       </button>
     </div>
 
-    <!-- Data table -->
     <div class="dash-table-wrap" role="region" aria-label="Incidents table">
       <table class="dash-table" aria-label="Incidents" aria-rowcount="-1">
         <thead>
@@ -165,7 +152,6 @@ $adminInitial = strtoupper(substr($_SESSION['user']['full_name'] ?? 'A', 0, 1));
         <tbody id="tableBody" aria-live="polite"></tbody>
       </table>
 
-      <!-- Empty state -->
       <div class="dash-empty" id="tableEmpty" hidden role="status" aria-live="polite">
         <div class="dash-empty-icon" aria-hidden="true"></div>
         <p>No incidents match the current filters.</p>
@@ -173,7 +159,6 @@ $adminInitial = strtoupper(substr($_SESSION['user']['full_name'] ?? 'A', 0, 1));
     </div>
   </section>
 
-  <!-- Right panel -->
   <aside class="dash-panel-right" aria-label="Incident detail panel">
     <div class="dash-detail-header">
       <span class="dash-detail-header-title" id="detailHeader">Incident Detail</span>
@@ -189,18 +174,15 @@ $adminInitial = strtoupper(substr($_SESSION['user']['full_name'] ?? 'A', 0, 1));
 
 </main>
 
-<!-- Side drawer form -->
 <div class="dash-drawer-overlay" id="drawerOverlay" role="dialog"
      aria-modal="true" aria-labelledby="drawerTitle">
   <div class="dash-drawer">
 
-    <!-- Drawer header -->
     <div class="dash-drawer-head">
       <h2 class="dash-drawer-title" id="drawerTitle">New Incident</h2>
       <button class="dash-drawer-close" id="drawerCloseBtn" aria-label="Close form">x</button>
     </div>
 
-    <!-- Step indicator -->
     <nav class="dash-steps" aria-label="Form steps">
       <div class="dash-step active" data-step="1" aria-label="Step 1: Classification">
         <div class="dash-step-num">1</div>
@@ -216,10 +198,8 @@ $adminInitial = strtoupper(substr($_SESSION['user']['full_name'] ?? 'A', 0, 1));
       </div>
     </nav>
 
-    <!-- Drawer body -->
     <div class="dash-drawer-body">
 
-      <!-- Step 1: basic information -->
       <div class="dash-step-panel active" data-step="1">
         <div class="dform-group">
           <label class="dform-label" for="f-title">
@@ -239,7 +219,6 @@ $adminInitial = strtoupper(substr($_SESSION['user']['full_name'] ?? 'A', 0, 1));
                     maxlength="1000" rows="3"></textarea>
         </div>
 
-        <!-- Severity selector -->
         <div class="dform-group">
           <div class="dform-label">
             Threat Level <span class="req" aria-hidden="true">*</span>
@@ -262,7 +241,6 @@ $adminInitial = strtoupper(substr($_SESSION['user']['full_name'] ?? 'A', 0, 1));
           <div class="dform-error" id="sev-err" role="alert" aria-live="polite"></div>
         </div>
 
-        <!-- Type picker -->
         <div class="dform-group">
           <div class="dform-label">
             Incident Type <span class="req" aria-hidden="true">*</span>
@@ -284,7 +262,6 @@ $adminInitial = strtoupper(substr($_SESSION['user']['full_name'] ?? 'A', 0, 1));
           <div class="dform-error" id="type-err" role="alert" aria-live="polite"></div>
         </div>
 
-        <!-- Status -->
         <div class="dform-group">
           <label class="dform-label" for="f-status">
             Status <span class="req" aria-hidden="true">*</span>
@@ -298,9 +275,7 @@ $adminInitial = strtoupper(substr($_SESSION['user']['full_name'] ?? 'A', 0, 1));
           <div class="dform-error" id="f-status-err" role="alert" aria-live="polite"></div>
         </div>
       </div>
-      <!-- end step 1 -->
 
-      <!-- Step 2: location -->
       <div class="dash-step-panel" data-step="2">
         <p style="font-size:12px;color:var(--txt-muted);margin-bottom:16px">
           Enter coordinates for the incident location. Latitude must be between -90 and 90; Longitude between -180 and 180.
@@ -339,9 +314,7 @@ $adminInitial = strtoupper(substr($_SESSION['user']['full_name'] ?? 'A', 0, 1));
           </div>
         </div>
       </div>
-      <!-- end step 2 -->
 
-      <!-- Step 3: notes -->
       <div class="dash-step-panel" data-step="3">
         <div class="dform-group">
           <label class="dform-label" for="f-notes">Incident Narrative / Notes</label>
@@ -351,16 +324,13 @@ $adminInitial = strtoupper(substr($_SESSION['user']['full_name'] ?? 'A', 0, 1));
           <div class="dform-help">Optional. These notes are stored with the incident log.</div>
         </div>
 
-        <!-- Audit trail preview (populated by JS) -->
         <div class="dash-audit-box" id="auditPreviewBox" aria-label="Audit trail preview" role="region">
           <div class="dash-audit-row"><span>Loading...</span><span></span></div>
         </div>
       </div>
-      <!-- end step 3 -->
 
-    </div><!-- end drawer-body -->
+    </div>
 
-    <!-- Drawer footer -->
     <div class="dash-drawer-foot">
       <button class="dash-drawer-foot-btn secondary" id="drawerPrev"
               aria-label="Go to previous step" style="display:none">
@@ -376,9 +346,8 @@ $adminInitial = strtoupper(substr($_SESSION['user']['full_name'] ?? 'A', 0, 1));
       </button>
     </div>
   </div>
-</div><!-- end drawer overlay -->
+</div>
 
-<!-- Confirm dialog -->
 <div class="dash-confirm-overlay" id="confirmOverlay"
      role="alertdialog" aria-modal="true"
      aria-labelledby="confirmTitle" aria-describedby="confirmText">
@@ -393,7 +362,6 @@ $adminInitial = strtoupper(substr($_SESSION['user']['full_name'] ?? 'A', 0, 1));
   </div>
 </div>
 
-<!-- Toast container -->
 <div class="dash-toast-wrap" id="toastWrap" aria-live="assertive" aria-atomic="false"></div>
 
 <script src="../assets/js/dashboard.js"></script>

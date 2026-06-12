@@ -2,11 +2,15 @@
 require_once 'config.php';
 
 if (isset($_SESSION['user'])) {
-    $redirect = $_SESSION['user']['role'] === 'admin' ? 'admin/dashboard.php' : 'map.php';
-    header("Location: $redirect");
-    exit;
-} else {
-    header("Location: auth/login.php");
+    if ($_SESSION['user']['role'] === 'admin') {
+        header("Location: admin/dashboard.php");
+        exit;
+    }
+
+    header("Location: map.php");
     exit;
 }
+
+header("Location: auth/login.php");
+exit;
 ?>

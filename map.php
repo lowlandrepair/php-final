@@ -1,11 +1,21 @@
 <?php
 require_once 'config.php';
 
-// Auth check
 if (!isset($_SESSION['user'])) {
     header("Location: auth/login.php");
     exit;
 }
+
+$fullName = htmlspecialchars($_SESSION['user']['full_name'] ?? 'Guest', ENT_QUOTES, 'UTF-8');
+$role = $_SESSION['user']['role'] ?? 'viewer';
+$roleName = htmlspecialchars(ucfirst($role), ENT_QUOTES, 'UTF-8');
+$isAdmin = $role === 'admin';
+
+$incidentTypes = [
+    'police' => 'Police / Security',
+    'fire' => 'Fire / Gas / Hazard',
+    'medical' => 'Medical / Emergency'
+];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -18,6 +28,10 @@ if (!isset($_SESSION['user'])) {
     <link rel="stylesheet" href="assets/css/main.css">
     <link rel="stylesheet" href="assets/css/map.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
+    <script>
+        window.APP_USER_ROLE = <?= json_encode($role); ?>;
+    </script>
 </head>
 <body>
     <div class="app-wrapper">
@@ -28,10 +42,10 @@ if (!isset($_SESSION['user'])) {
             </div>
             <div class="user-area">
                 <div class="user-info">
-                    <span class="user-name"><?= htmlspecialchars($_SESSION['user']['full_name'] ?? 'Guest'); ?></span>
-                    <span class="user-role badge badge-info"><?= htmlspecialchars(ucfirst($_SESSION['user']['role'] ?? 'viewer')); ?></span>
+                    <span class="user-name"><?= $fullName ?></span>
+                    <span class="user-role badge badge-info"><?= $roleName ?></span>
                 </div>
-                <?php if (isset($_SESSION['user']['role']) && $_SESSION['user']['role'] === 'admin'): ?>
+                <?php if ($isAdmin): ?>
                 <a href="admin/dashboard.php" class="btn btn-primary btn-sm admin-btn" aria-label="Admin dashboard">
                     Admin Dashboard
                 </a>
@@ -130,14 +144,8 @@ if (!isset($_SESSION['user'])) {
                             <div class="form-group">
                                 <label for="incident_type" class="form-label">Incident Type</label>
                                 <select id="incident_type" name="incident_type" class="form-select" required>
-                                    <?php
-                                    $incidentTypes = [
-                                        'police' => 'Police / Security',
-                                        'fire' => 'Fire / Gas / Hazard',
-                                        'medical' => 'Medical / Emergency'
-                                    ];
-                                    foreach ($incidentTypes as $val => $lbl) {
-                                        echo "<option value=\"$val\">$lbl</option>\n";
+                                    <?php foreach ($incidentTypes as $value => $label) {
+                                        echo "<option value=\"$value\">$label</option>\n";
                                     }
                                     ?>
                                 </select>

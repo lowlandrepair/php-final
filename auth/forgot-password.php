@@ -1,10 +1,13 @@
 <?php
 require_once '../config.php';
 
-// Redirect if already logged in
 if (isset($_SESSION['user'])) {
-    $redirect = $_SESSION['user']['role'] === 'admin' ? '../admin/dashboard.php' : '../map.php';
-    header("Location: $redirect");
+    if ($_SESSION['user']['role'] === 'admin') {
+        header("Location: ../admin/dashboard.php");
+        exit;
+    }
+
+    header("Location: ../map.php");
     exit;
 }
 ?>

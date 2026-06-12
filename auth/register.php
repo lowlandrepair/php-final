@@ -1,11 +1,10 @@
 <?php
 require_once '../config.php';
 
-// Handle AJAX POST request
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Support JSON input
     $input = file_get_contents('php://input');
     $data = json_decode($input, true);
+
     if (!$data) {
         $data = $_POST;
     }
@@ -39,7 +38,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    // Check if email already exists
     $sql = "SELECT id FROM users WHERE email = :email LIMIT 1";
     $stmt = $pdo->prepare($sql);
     $stmt->execute([':email' => $email]);
@@ -49,7 +47,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    // Insert user
     $passwordHash = password_hash($password, PASSWORD_BCRYPT, ['cost' => 10]);
     $sql = "INSERT INTO users (email, password_hash, full_name, role) VALUES (:email, :password_hash, :full_name, 'viewer')";
     $stmt = $pdo->prepare($sql);
@@ -62,8 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ]);
         
         $userId = $pdo->lastInsertId();
-        
-        // Log user in
+
         $_SESSION['user'] = [
             'id' => $userId,
             'email' => $email,
@@ -81,10 +77,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Redirect if already logged in
 if (isset($_SESSION['user'])) {
-    $redirect = $_SESSION['user']['role'] === 'admin' ? '../admin/dashboard.php' : '../map.php';
-    header("Location: $redirect");
+    if ($_SESSION['user']['role'] === 'admin') {
+        header("Location: ../admin/dashboard.php");
+        exit;
+    }
+
+    header("Location: ../map.php");
     exit;
 }
 ?>

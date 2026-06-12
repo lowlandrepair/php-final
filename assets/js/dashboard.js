@@ -1,11 +1,8 @@
-/* ============================================================
-   Admin Dashboard - San Andreas Crime Map
-   dashboard.js - CRUD and UI
-   ============================================================ */
+
 
 'use strict';
 
-/* Validation helpers */
+
 const Schema = {
   string(v, min = 1, max = 200) {
     if (typeof v !== 'string') return 'Must be a string';
@@ -33,17 +30,16 @@ const Schema = {
     return null;
   },
   sanitize(str) {
-    // Strip potential XSS from string inputs before sending to API
     return String(str).replace(/<[^>]*>/g, '').trim();
   }
 };
 
-/* Audit trail builder */
+
 const AuditTrail = {
   _log: [],
   record(action, payload, userId, userName) {
     const entry = {
-      action,                          // CREATE | UPDATE | DELETE
+      action,
       actorId:   userId,
       actorName: userName,
       timestamp: new Date().toISOString(),
@@ -62,7 +58,7 @@ const AuditTrail = {
   }
 };
 
-/* Toast system */
+
 const Toast = {
   wrap: null,
   init() { this.wrap = document.getElementById('toastWrap'); },
@@ -84,7 +80,7 @@ const Toast = {
   }
 };
 
-/* Confirm dialog */
+
 const Confirm = {
   overlay: null,
   okBtn:   null,
@@ -108,7 +104,7 @@ const Confirm = {
   }
 };
 
-/* API client */
+
 const API = {
   base: '../api.php?action=',
   async request(action, method = 'GET', body = null) {
@@ -127,24 +123,24 @@ const API = {
   deleteIncident(id)   { return this.request(`delete_incident&id=${id}`, 'POST'); },
 };
 
-/* State */
+
 const State = {
   incidents:    [],
   filtered:     [],
-  selected:     new Set(),   // row IDs (checkboxes)
-  activeId:     null,        // detail panel
+  selected:     new Set(),
+  activeId:     null,
   filterStatus: 'all',
   filterType:   'all',
   searchQuery:  '',
   sortCol:      'created_at',
   sortDir:      'desc',
-  drawerMode:   null,        // 'create' | 'edit'
+  drawerMode:   null,
   editId:       null,
   drawerStep:   1,
   formData:     {},
 };
 
-/* Severity helpers */
+
 const SEV_COLORS = ['','#3fb950','#d2a624','#d29922','#f0883e','#f85149'];
 const SEV_LABELS = ['','Low','Guarded','Elevated','High','Critical'];
 
@@ -158,7 +154,7 @@ function renderSevPips(sev) {
   return html;
 }
 
-/* Table renderer */
+
 function applyFilters() {
   let list = [...State.incidents];
 
@@ -172,8 +168,6 @@ function applyFilters() {
   }
   if (State.filterStatus !== 'all') list = list.filter(i => i.status === State.filterStatus);
   if (State.filterType   !== 'all') list = list.filter(i => i.incident_type === State.filterType);
-
-  // Sort
   list.sort((a, b) => {
     let av = a[State.sortCol], bv = b[State.sortCol];
     if (typeof av === 'string') av = av.toLowerCase(), bv = bv.toLowerCase();
@@ -189,8 +183,6 @@ function renderTable() {
   applyFilters();
   const tbody = document.getElementById('tableBody');
   const emptyState = document.getElementById('tableEmpty');
-
-  // Update stat strip
   const total  = State.incidents.length;
   const active = State.incidents.filter(i => i.status === 'active').length;
   const disp   = State.incidents.filter(i => i.status === 'dispatched').length;
@@ -251,8 +243,6 @@ function renderTable() {
       </td>
     </tr>`;
   }).join('');
-
-  // Bind row events
   tbody.querySelectorAll('tr[data-id]').forEach(tr => {
     const id = parseInt(tr.dataset.id, 10);
 
@@ -282,15 +272,13 @@ function renderTable() {
       deleteSingle(id);
     });
   });
-
-  // Restore highlight for selected checkboxes
   State.selected.forEach(id => {
     const tr = tbody.querySelector(`tr[data-id="${id}"]`);
     if (tr) tr.classList.add('highlighted');
   });
 }
 
-/* Bulk bar */
+
 function updateBulkBar() {
   const bar    = document.getElementById('bulkBar');
   const normal = document.getElementById('normalToolbar');
@@ -310,12 +298,12 @@ function updateBulkBar() {
   if (hdr) hdr.checked = all;
 }
 
-/* Detail panel */
+
 function openDetail(id) {
   const inc = State.incidents.find(i => i.id === id);
   if (!inc) return;
   State.activeId = id;
-  renderTable(); // re-render to update row highlight
+  renderTable();
 
   const body = document.getElementById('detailBody');
   const lat  = parseFloat(inc.latitude).toFixed(6);
@@ -324,11 +312,7 @@ function openDetail(id) {
   const statusLabel = { active: 'Active', dispatched: 'Dispatched', resolved: 'Resolved' };
   const createdAt = new Date(inc.created_at).toLocaleString('en-GB', { dateStyle:'medium', timeStyle:'short' });
   const updatedAt = new Date(inc.updated_at).toLocaleString('en-GB', { dateStyle:'medium', timeStyle:'short' });
-
-  // Build a simple OSM map embed
   const mapUrl = `https://www.openstreetmap.org/export/embed.html?bbox=${parseFloat(inc.longitude)-.005},${parseFloat(inc.latitude)-.005},${parseFloat(inc.longitude)+.005},${parseFloat(inc.latitude)+.005}&layer=mapnik&marker=${inc.latitude},${inc.longitude}`;
-
-  // Find last audit entry for this incident
   const auditEntries = AuditTrail.getAll().filter(e => e.delta.includes(`"id":${id}`) || (e.action === 'CREATE' && e.delta.includes(inc.title?.slice(0,10))));
   const lastAudit    = AuditTrail.getAll().find(e => e.delta.includes(`"id":${id}`));
 
@@ -428,7 +412,7 @@ function closeDetail() {
     </div>`;
 }
 
-/* Drawer form */
+
 function openDrawer(mode, id = null) {
   State.drawerMode = mode;
   State.editId     = id;
@@ -437,8 +421,6 @@ function openDrawer(mode, id = null) {
 
   const title = document.getElementById('drawerTitle');
   title.textContent = mode === 'create' ? 'New Incident' : `Edit Incident #${String(id).padStart(4,'0')}`;
-
-  // Reset validation
   document.querySelectorAll('.dform-input, .dform-textarea, .dform-select').forEach(el => {
     el.classList.remove('error');
   });
@@ -518,8 +500,6 @@ function goToStep(step) {
   prevBtn.style.display = step > 1 ? '' : 'none';
   nextBtn.style.display = step < 3 ? '' : 'none';
   saveBtn.style.display = step === 3 ? '' : 'none';
-
-  // Update audit preview on step 3
   if (step === 3) renderAuditPreview();
 }
 
@@ -539,7 +519,7 @@ function renderAuditPreview() {
     <div class="dash-audit-row"><span>Target ID</span><span>${State.editId ?? 'pending'}</span></div>`;
 }
 
-/* Per-step validation */
+
 function validateStep(step) {
   let valid = true;
 
@@ -572,7 +552,7 @@ function validateStep(step) {
   return valid;
 }
 
-/* Collect form payload */
+
 function collectPayload() {
   const sev  = document.querySelector('.dform-sev-btn[class*="sel-"]');
   const type = document.querySelector('input[name="f-type"]:checked');
@@ -588,7 +568,7 @@ function collectPayload() {
   };
 }
 
-/* Save create or update */
+
 async function saveDrawer() {
   const payload  = collectPayload();
   const saveBtn  = document.getElementById('drawerSave');
@@ -630,7 +610,7 @@ async function saveDrawer() {
   }
 }
 
-/* Delete single */
+
 async function deleteSingle(id) {
   const inc = State.incidents.find(i => i.id === id);
   const ok  = await Confirm.ask(
@@ -651,7 +631,7 @@ async function deleteSingle(id) {
   }
 }
 
-/* Bulk operations */
+
 async function bulkDelete() {
   const ids = [...State.selected];
   if (!ids.length) return;
@@ -725,7 +705,7 @@ function bulkExportCSV() {
   Toast.show(`Exported ${rows.length} records`, 'success');
 }
 
-/* Load data */
+
 async function loadIncidents() {
   try {
     const res = await API.getIncidents();
@@ -741,7 +721,7 @@ async function loadIncidents() {
   }
 }
 
-/* Sort */
+
 function bindSortHeaders() {
   document.querySelectorAll('.dash-table thead th.sortable').forEach(th => {
     th.addEventListener('click', () => {
@@ -760,7 +740,7 @@ function bindSortHeaders() {
   });
 }
 
-/* Escape HTML */
+
 function escHtml(str) {
   return String(str ?? '')
     .replace(/&/g,'&amp;')
@@ -770,19 +750,19 @@ function escHtml(str) {
     .replace(/'/g,'&#39;');
 }
 
-/* Boot */
+
 document.addEventListener('DOMContentLoaded', async () => {
 
   Toast.init();
   Confirm.init();
 
-  /* ---- Toolbar: search ---- */
+  
   document.getElementById('searchInput').addEventListener('input', e => {
     State.searchQuery = e.target.value;
     renderTable();
   });
 
-  /* ---- Toolbar: filter buttons ---- */
+  
   document.querySelectorAll('.dash-filter-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const group = btn.dataset.group;
@@ -796,7 +776,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   });
 
-  /* ---- Master checkbox ---- */
+  
   document.getElementById('masterCb').addEventListener('change', e => {
     if (e.target.checked) State.filtered.forEach(i => State.selected.add(i.id));
     else State.selected.clear();
@@ -804,10 +784,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     updateBulkBar();
   });
 
-  /* ---- Add button ---- */
+  
   document.getElementById('addBtn').addEventListener('click', () => openDrawer('create'));
 
-  /* ---- Bulk bar buttons ---- */
+  
   document.getElementById('bulkDeleteBtn').addEventListener('click',  bulkDelete);
   document.getElementById('bulkResolveBtn').addEventListener('click', bulkResolve);
   document.getElementById('bulkExportBtn').addEventListener('click',  bulkExportCSV);
@@ -817,22 +797,22 @@ document.addEventListener('DOMContentLoaded', async () => {
     renderTable();
   });
 
-  /* ---- Export all ---- */
+  
   document.getElementById('exportAllBtn')?.addEventListener('click', () => {
     State.selected.clear();
     bulkExportCSV();
   });
 
-  /* ---- Detail panel close ---- */
+  
   document.getElementById('detailCloseBtn').addEventListener('click', closeDetail);
 
-  /* ---- Drawer overlay close ---- */
+  
   document.getElementById('drawerOverlay').addEventListener('click', e => {
     if (e.target === document.getElementById('drawerOverlay')) closeDrawer();
   });
   document.getElementById('drawerCloseBtn').addEventListener('click', closeDrawer);
 
-  /* ---- Drawer step navigation ---- */
+  
   document.getElementById('drawerNext').addEventListener('click', () => {
     if (!validateStep(State.drawerStep)) return;
     if (State.drawerStep < 3) goToStep(State.drawerStep + 1);
@@ -842,7 +822,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
   document.getElementById('drawerSave').addEventListener('click', saveDrawer);
 
-  /* ---- Severity buttons ---- */
+  
   document.querySelectorAll('.dform-sev-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       const sev = parseInt(btn.dataset.sev, 10);
@@ -851,7 +831,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   });
 
-  /* ---- Type radio labels ---- */
+  
   document.querySelectorAll('.dform-type-label').forEach(lbl => {
     lbl.addEventListener('click', () => {
       const val = lbl.querySelector('input')?.value;
@@ -860,14 +840,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   });
 
-  /* ---- Sort headers ---- */
+  
   bindSortHeaders();
 
-  /* ---- Initial data load ---- */
+  
   await loadIncidents();
 
-  /* ---- Auto-refresh every 30s ---- */
+  
   setInterval(async () => {
     if (!document.hidden) await loadIncidents();
   }, 30000);
 });
+
