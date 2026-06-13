@@ -316,14 +316,6 @@ $adminInitial = strtoupper(substr($_SESSION['user']['full_name'] ?? 'A', 0, 1));
       </div>
 
       <div class="dash-step-panel" data-step="3">
-        <div class="dform-group">
-          <label class="dform-label" for="f-notes">Incident Narrative / Notes</label>
-          <textarea id="f-notes" class="dform-textarea"
-                    placeholder="Additional notes..."
-                    rows="5" maxlength="2000"></textarea>
-          <div class="dform-help">Optional. These notes are stored with the incident log.</div>
-        </div>
-
         <div class="dash-audit-box" id="auditPreviewBox" aria-label="Audit trail preview" role="region">
           <div class="dash-audit-row"><span>Loading...</span><span></span></div>
         </div>

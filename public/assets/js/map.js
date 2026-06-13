@@ -182,14 +182,11 @@ function plotIncidentsOnMap() {
         const type = incident.incident_type;
 
         let color = '#3B82F6';
-        let emoji = '';
 
         if (type === 'fire') {
             color = '#EF4444';
-            emoji = '';
         } else if (type === 'medical') {
             color = '#10B981';
-            emoji = '';
         }
 
         if (status === 'resolved') {
@@ -457,7 +454,7 @@ async function handleResolveSubmit() {
         alert("Server communication error occurred.");
     } finally {
         submitBtn.disabled = false;
-        submitBtn.textContent = '✓ Resolve Incident';
+        submitBtn.textContent = 'Resolve Incident';
     }
 }
 

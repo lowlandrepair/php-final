@@ -203,7 +203,6 @@ function renderTable() {
   tbody.innerHTML = State.filtered.map(inc => {
     const checked  = State.selected.has(inc.id);
     const isActive = State.activeId === inc.id;
-    const typeIcons = { police: '', fire: '', medical: '' };
     const statusLabel = { active: 'Active', dispatched: 'Dispatched', resolved: 'Resolved' };
     const lat = parseFloat(inc.latitude).toFixed(6);
     const lng = parseFloat(inc.longitude).toFixed(6);
@@ -224,7 +223,7 @@ function renderTable() {
       </td>
       <td>
         <span class="dash-type-pill ${inc.incident_type}">
-          ${typeIcons[inc.incident_type] ?? ''} ${inc.incident_type}
+          ${inc.incident_type}
         </span>
       </td>
       <td>
@@ -308,7 +307,6 @@ function openDetail(id) {
   const body = document.getElementById('detailBody');
   const lat  = parseFloat(inc.latitude).toFixed(6);
   const lng  = parseFloat(inc.longitude).toFixed(6);
-  const typeIcons = { police: '', fire: '', medical: '' };
   const statusLabel = { active: 'Active', dispatched: 'Dispatched', resolved: 'Resolved' };
   const createdAt = new Date(inc.created_at).toLocaleString('en-GB', { dateStyle:'medium', timeStyle:'short' });
   const updatedAt = new Date(inc.updated_at).toLocaleString('en-GB', { dateStyle:'medium', timeStyle:'short' });
@@ -335,7 +333,7 @@ function openDetail(id) {
         <div class="dash-detail-label">Type</div>
         <div class="dash-detail-value">
           <span class="dash-type-pill ${inc.incident_type}">
-            ${typeIcons[inc.incident_type] ?? ''} ${inc.incident_type}
+            ${inc.incident_type}
           </span>
         </div>
       </div>
@@ -369,7 +367,7 @@ function openDetail(id) {
     <div class="dash-detail-field">
       <div class="dash-detail-label">Dispatch</div>
       <div class="dash-detail-value">
-        <span class="dash-type-pill ${inc.dispatch_unit}">${typeIcons[inc.dispatch_unit] ?? ''} ${inc.dispatch_unit}</span>
+        <span class="dash-type-pill ${inc.dispatch_unit}">${inc.dispatch_unit}</span>
         <span style="font-size:11px;color:var(--txt-muted);margin-left:6px">${inc.dispatch_status ?? ''}</span>
       </div>
     </div>` : ''}
@@ -450,13 +448,12 @@ function prefillForm(inc) {
   setVal('f-status',      inc.status);
   setVal('f-latitude',    inc.latitude);
   setVal('f-longitude',   inc.longitude);
-  setVal('f-notes',       '');
   selectSeverity(inc.severity);
   selectType(inc.incident_type);
 }
 
 function clearForm() {
-  ['f-title','f-description','f-status','f-latitude','f-longitude','f-notes'].forEach(id => setVal(id, ''));
+  ['f-title','f-description','f-status','f-latitude','f-longitude'].forEach(id => setVal(id, ''));
   selectSeverity(null);
   selectType(null);
 }
@@ -564,7 +561,6 @@ function collectPayload() {
     status:        document.getElementById('f-status')?.value ?? 'active',
     latitude:      parseFloat(document.getElementById('f-latitude')?.value),
     longitude:     parseFloat(document.getElementById('f-longitude')?.value),
-    notes:         Schema.sanitize(document.getElementById('f-notes')?.value ?? ''),
   };
 }
 
